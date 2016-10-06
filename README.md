@@ -12,7 +12,7 @@ import Video from 'react-native-3deye-video';
 Later within your render function
 
 ```javascript
-<Video source={streamUrl}   // Can be a URL or a local file.
+<Video source={streamUrl}
        rate={1.0}
        volume={1.0}
        muted={false}
