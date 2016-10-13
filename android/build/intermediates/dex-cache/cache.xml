@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-6004c28b2f32781b7de7df7f011484361c572717.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-8f05619851ea31c9a3bfb4abd8e7dbdd6d10c234.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3341b66c54367e777a0647e2db96c045329bfeab">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-43cfa8918400901a076a5f6bee7b52b7e0023208.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-94be441ac44ef746206d1020acc3c9d250637d7c.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.google.android.exoplayer\exoplayer\r2.0.2\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e45eb9ad9a54ca17c4f849187bebddd261510239">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-0e34d8c898feba77e9a5c95e3bcec1a11bacc5c2.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-7ffc805d904d565b192018a543a81571040f5590.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.34.1\jars\libs\infer-annotations-1.5.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="085d4b604a91b790ed60ccf219b0c30c9db7d9ea">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\infer-annotations-1.5-1da5b7c52ecfdf1fb0665c4e3f6cedca5e5b2a94.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.2.3\1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14\jackson-core-2.2.3.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\jackson-core-2.2.3-9410bcc0d67051dcf0ba6ac7dfd36d873b4843ce.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.9.0\f824591a0016efbaeddb8300bee54832a1398cfa\okio-1.9.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="f824591a0016efbaeddb8300bee54832a1398cfa">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\okio-1.9.0-b2f11b41103225d3b184235022d382e41c599b9f.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-7565e23ec12f9f2850b3c7fa5f8285259de9f584.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline-base\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ca63c521b5745ae9a09629d7ca67ff6bc2a967fe">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-bb39af07ec339dce5c88ef92d70532f40255c6f8.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline-base\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ca63c521b5745ae9a09629d7ca67ff6bc2a967fe">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-cc2c4611a5144aae01bdeffefbbeb6fe61718d03.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\javax.inject\javax.inject\1\6975da39a7040257bd51d21a231b76c915872d38\javax.inject-1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\javax.inject-1-1f5dbd3024e9a8e3daa2125aa51ae04843ada87f.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\fbcore\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="98786c1770b531b9194fb6448b2a2692c64074b6">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-42ab24141453b6f94fc7e38d6282df57846852b8.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline-okhttp3\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="2b8a01ad9da5d26d0067894c22e87597bca2c500">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-8d5e2da18ee063c9a45ff78513e921eb05c9884b.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\fresco\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d31aadf33187c37a7cd63dc1b769f8c6e33f78c3">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-9cdf4f395fc6db23b83c12d14a5d932b9ca96724.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline-okhttp3\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="2b8a01ad9da5d26d0067894c22e87597bca2c500">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-fa280b4ae6d9f20eab95e6970fbf735eedd76373.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-40b8a9f6ebaca1eee522ddd19456ea73bd80e835.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp-urlconnection\3.4.1\63994437f62bc861bc20c605d12962f7246116d1\okhttp-urlconnection-3.4.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="63994437f62bc861bc20c605d12962f7246116d1">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\okhttp-urlconnection-3.4.1-a5a39003d1c2d901986a27c1144e1e80fef2767c.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\imagepipeline\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="3341b66c54367e777a0647e2db96c045329bfeab">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-b060d914078af6cbeb8a0880ec805a00e4600a28.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-0d90711090bd28e928ff29fac4a9a1c95712e44f.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.soloader\soloader\0.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8f615bca00639150c9eb6175d4b5471193f70794">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-2a897626afaeab6d25a24771a6576e3c48f15d40.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="65d086ee9daaf87b5af62ad24471edafa433354c">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-a08d06ec43eb9ee68697140e836218a926584dd3.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-643d2ace88750d3b7bf95f4dd64ccc7f28c22141.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp-ws\3.4.1\8ace66ef7002d98f633377c9e67daeeb196d8c3b\okhttp-ws-3.4.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8ace66ef7002d98f633377c9e67daeeb196d8c3b">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\okhttp-ws-3.4.1-95fb02334228d451e6f5a94a663b3872e33e6ced.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\fbcore\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="98786c1770b531b9194fb6448b2a2692c64074b6">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-8974833359712caa9b735f4f43fb6b4504ddb1f5.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.parse.bolts\bolts-tasks\1.4.0\d85884acf6810a3bbbecb587f239005cbc846dc4\bolts-tasks-1.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\bolts-tasks-1.4.0-8c74943a917accb8f2d3b3ae139a70b91f795d58.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-e64ebc3742dd6d082f825179c84befba9843bf40.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.fresco\drawee\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1137942adeb03984c1311b662363dd38fc238fd3">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-9ccface30b224ecfb29977647259b6d14c137d4c.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.34.1\jars\libs\infer-annotations-1.5.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="085d4b604a91b790ed60ccf219b0c30c9db7d9ea">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\infer-annotations-1.5-9f6cb41cd283c8f4f851f982749a25295fa7c370.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.nineoldandroids\library\2.4.0\e9b63380f3a242dbdbf103a2355ad7e43bad17cb\library-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\library-2.4.0-26494ef100d05393b6d89cacd85529a1d6631dec.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.34.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="24959c1d0b0991e7d0d42ab7bd7e7d68b2c3e679">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-2f61b8577b1f227d902dc2034f2cd98697775416.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.react\react-native\0.34.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="24959c1d0b0991e7d0d42ab7bd7e7d68b2c3e679">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-1e20015f0945f84813ca3af719bf3dd066a4ef1a.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-basement\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-0f7b86df4b6e1febdb724a6642c452d91124d785.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\drawee\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1137942adeb03984c1311b662363dd38fc238fd3">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-5d596427179bbb20fcf14435dec0b24c0a54c4d3.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.facebook.fresco\fresco\0.11.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d31aadf33187c37a7cd63dc1b769f8c6e33f78c3">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-d547545939848fb84f755a809ce494b206001918.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.4.1\c7c4f9e35c2fd5900da24f9872e3971801f08ce0\okhttp-3.4.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c7c4f9e35c2fd5900da24f9872e3971801f08ce0">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\okhttp-3.4.1-abb98ff70a8ed278403af7e8f251f7a03936c410.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-c1749eb439c8613268ee5cfdb7f9545f923dc26a.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="65d086ee9daaf87b5af62ad24471edafa433354c">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-cabc92e55ff868a1c8632f2503a6f2e3a6f58541.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-cad6321c592ca0b7241329c22243a1957a219716.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-f54af1b24448882e714bdae2229b9cbe34a3996a.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-23231509913245288b87326fae7ded46adbcc2e9.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-2872a387e159579da2e2369bf9c5e9d70a98b0d3.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\24.2.0\support-annotations-24.2.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="6be858a75633b1f0a2d24cad740db57775cb6871">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\support-annotations-24.2.0-0d757ff6e76bc71c5b93b5d182ad856e39a3c95c.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\internal_impl-23.4.0-5e63ca5682a3ca80f6e47225c1d86e344cf512d2.jar" />
+    </item>
+    <item
+        jar="C:\Users\1\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\3.0.0\5871fb60dc68d67da54a663c3fd636a10a532948\jsr305-3.0.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\jsr305-3.0.0-c3b601fe710247b8f6effe323332e3a35924c20c.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.google.android.exoplayer\exoplayer\r2.0.2\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e45eb9ad9a54ca17c4f849187bebddd261510239">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-5c43080e5691f4518ca9af7d02fd370c9b2f51c9.jar" />
+    </item>
+    <item
+        jar="F:\work\ReactLibExample\android\app\build\intermediates\exploded-aar\com.facebook.soloader\soloader\0.1.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8f615bca00639150c9eb6175d4b5471193f70794">
+        <dex dex="F:\work\ReactLibExample\android\app\build\intermediates\pre-dexed\debug\classes-afde6644855603bb94b975a9d6a06701263a3dd1.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\8.4.0\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\classes-ac65fd45f4583638936e1ed5e81b23b351fdafbc.jar" />
+    </item>
+    <item
+        jar="F:\work\react\react-native-3deye-video\android\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="F:\work\react\react-native-3deye-video\android\app\build\intermediates\pre-dexed\debug\internal_impl-23.4.0-e590d73eb7917578dc83d6a324bc9c2b5b628367.jar" />
+    </item>
+
+</items>

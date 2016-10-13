@@ -1,0 +1,3 @@
+rootProject.name = 'ReactLibExample'
+
+include ':app'

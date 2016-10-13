@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/F:/work/react/react-native-3deye-video/android/app/build/intermediates/exploded-aar/com.google.android.exoplayer/exoplayer/r2.0.2/res/values-bs-rBA/values-bs-rBA.xml -->
+    <eat-comment/>
+    <string name="exo_controls_fastforward_description">"Ubrzaj"</string>
+    <string name="exo_controls_next_description">"Sljedeća numera"</string>
+    <string name="exo_controls_pause_description">"Pauziraj"</string>
+    <string name="exo_controls_play_description">"Reproduciraj"</string>
+    <string name="exo_controls_previous_description">"Prethodna numera"</string>
+    <string name="exo_controls_rewind_description">"Premotaj"</string>
+    <string name="exo_controls_stop_description">"Zaustavi"</string>
+</resources>
