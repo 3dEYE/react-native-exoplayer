@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- From: file:/F:/work/react/react-native-3deye-video/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/res/values-h320dp-v13/values-h320dp-v13.xml -->
-    <eat-comment/>
-    <bool name="abc_allow_stacked_button_bar">true</bool>
-</resources>
