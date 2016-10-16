@@ -1,0 +1,5 @@
+rootProject.name = 'VideoPlayer'
+
+include ':app'
+include ':react-native-3deye-video'
+project(':react-native-3deye-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-3deye-video/android')

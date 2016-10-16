@@ -1,0 +1,28 @@
+{
+  "name": "react-native-3deye-video",
+  "version": "0.0.1",
+  "description": "A video player component for react native",
+  "license": "LGPL",
+  "main": "VideoPlayer.js",
+  "files": [
+      "VideoPlayer.js",
+      "android"
+  ],
+  "author": {
+    "name": "Alexey Tcherevatov",
+    "email": "alexey@tcherevatov.ru"
+  },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/3deye/react-native-3deye-video.git"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "react-component",
+    "android",
+    "video",
+    "player"
+  ]
+}
