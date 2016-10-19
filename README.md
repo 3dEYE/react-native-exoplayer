@@ -42,6 +42,7 @@ Try included example:
 git clone https://github.com/3dEYE/react-native-3deye-video.git
 cd react-native-3deye-video/example
 npm install
+react-native link
 ```
 
 2. Replace '{YOUR_LICENCE_KEY}' with your actual JWPlayer license key at `example/android/app/src/main/AndroidManifest.xml`
