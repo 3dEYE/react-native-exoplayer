@@ -36,7 +36,7 @@ public class ReactJWPlayerManager extends SimpleViewManager<ReactJWPlayerVideoVi
 
     @ReactProp(name = "file")
     public void setSource(ReactJWPlayerVideoView view, String src) {
-        PlaylistItem item = new PlaylistItem(src);
-        view.load(item);
+        //PlaylistItem item = new PlaylistItem(src);
+        //view.load(item);
     }
 }

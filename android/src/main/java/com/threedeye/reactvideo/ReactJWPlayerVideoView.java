@@ -7,26 +7,32 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.configuration.PlayerConfig;
 
-public class ReactJWPlayerVideoView extends JWPlayerView implements LifecycleEventListener {
+public class ReactJWPlayerVideoView extends JWPlayerView  {
 
     ReactJWPlayerVideoView(ThemedReactContext themedReactContext, PlayerConfig playerConfig) {
         super(themedReactContext.getCurrentActivity(), playerConfig);
-        themedReactContext.addLifecycleEventListener(this);
     }
 
     @Override
-    public void onHostPause() {
-        this.onPause();
+    protected void onAttachedToWindow() {
+
+        super.onAttachedToWindow();
     }
 
+    private final Runnable mLayoutRunnable = new Runnable() {
     @Override
-    public void onHostResume() {
-        this.onResume();
+    public void run() {
+      measure(
+          MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+          MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+      layout(getLeft(), getTop(), getRight(), getBottom());
     }
+    };
 
     @Override
-    public void onHostDestroy() {
-        this.onDestroy();
-    }
+    public void requestLayout() {
+        super.requestLayout();
+        post(mLayoutRunnable);
+  }
 
 }
