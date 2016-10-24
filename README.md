@@ -37,17 +37,16 @@ Later within your render function
 
 Try included example:
 
-1. Clone repository and install dependencies:
+Clone repository and install dependencies:
 ```bash
 git clone https://github.com/3dEYE/react-native-3deye-video.git
 cd react-native-3deye-video/example
 npm install
-react-native link
 ```
 
-2. Replace '{YOUR_LICENCE_KEY}' with your actual JWPlayer license key at `example/android/app/src/main/AndroidManifest.xml`
+Replace '{YOUR_LICENCE_KEY}' with your actual JWPlayer license key at `example/android/app/src/main/AndroidManifest.xml`
 
-3. Run example:
+Run example:
 ```bash
 react-native run-android
 ```
