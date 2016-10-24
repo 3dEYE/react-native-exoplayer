@@ -6,21 +6,22 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity
+	AppRegistry,---
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity
 } from 'react-native';
 
 import Video from 'react-native-3deye-video';
 
 export default class VideoPlayer extends Component {
 
+
   constructor(props) {
     super(props);
- 	this._onEnd = this._onEnd.bind(this); 
- 	this._onProgress = this._onProgress.bind(this);
+ 	  this._onEnd = this._onEnd.bind(this); 
+ 	  this._onProgress = this._onProgress.bind(this);
     this._onError = this._onError.bind(this); 
     this.state = {
       url: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8'
@@ -57,7 +58,7 @@ export default class VideoPlayer extends Component {
             onError={this._onError}
             onProgress={this._onProgress}
             /*rate={1.0}
-           volume={1.0}
+            volume={1.0}
             muted={false}
             paused={true}*/
           />
@@ -72,22 +73,19 @@ export default class VideoPlayer extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+	container: {
+		flex: 1,
+		backgroundColor: '#F5FCFF'
+	},
+	playerContainer: {
+		flex: 1,
+		flexDirection: 'column'
+	},
+	player: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		flex: 1
+	}
 });
 
 AppRegistry.registerComponent('VideoPlayer', () => VideoPlayer);

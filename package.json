@@ -2,7 +2,7 @@
   "name": "react-native-3deye-video",
   "version": "0.0.1",
   "description": "A video player component for react native",
-  "license": "LGPL",
+  "license": "LGPL-3.0",
   "main": "VideoPlayer.js",
   "files": [
       "VideoPlayer.js",

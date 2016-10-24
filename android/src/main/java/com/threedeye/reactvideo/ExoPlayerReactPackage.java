@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class JWPlayerReactPackage implements ReactPackage {
+public class ExoPlayerReactPackage implements ReactPackage {
 
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
@@ -22,7 +22,7 @@ public class JWPlayerReactPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(
             ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(
-                new ReactJWPlayerManager()
+                new ReactExoPlayerManager()
         );
     }
 

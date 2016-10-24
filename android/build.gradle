@@ -23,5 +23,5 @@ repositories {
 
 dependencies {
     compile 'com.facebook.react:react-native:0.35.+'
-    compile 'com.longtailvideo.jwplayer:jwplayer-android-sdk:+'
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.9'
 }
