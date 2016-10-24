@@ -19,19 +19,32 @@ export default class VideoPlayer extends Component {
 
   constructor(props) {
     super(props);
-
+ 	this._onEnd = this._onEnd.bind(this); 
+ 	this._onProgress = this._onProgress.bind(this);
+    this._onError = this._onError.bind(this); 
     this.state = {
       url: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8'
     };
   }
 
+  _onEnd(){
+  	alert('end');
+  }
+
+  _onError(data){
+  	alert('error');
+  }
+
+  _onProgress(data){
+  	alert('progress: duration = '+ data.duration +" current time = " + data.currentTime);
+  }
+
   render() {
     const { url } = this.state;
-
-    return (
+     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!!!
+          Welcome to React Native!!!{this.state.text}
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.android.js
@@ -39,7 +52,14 @@ export default class VideoPlayer extends Component {
         <View>
           <Video
             style={{width: 320, height: 240}}
-            file={url}
+            source={url}
+            onEnd={this._onEnd}
+            onError={this._onError}
+            onProgress={this._onProgress}
+            /*rate={1.0}
+           volume={1.0}
+            muted={false}
+            paused={true}*/
           />
         </View>
         <Text style={styles.instructions}>
