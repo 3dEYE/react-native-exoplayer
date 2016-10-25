@@ -5,10 +5,14 @@ import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import android.net.Uri;
+import com.threedeye.reactvideo.ExoPlayerView.Events;
+
+import java.util.Map;
 
 public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
 
@@ -29,6 +33,16 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
     public ExoPlayerView  createViewInstance(ThemedReactContext reactContext) {
         ExoPlayerView playerView = new ExoPlayerView(reactContext);
         return playerView;
+    }
+
+    @Override
+    @Nullable
+    public Map getExportedCustomDirectEventTypeConstants() {
+        MapBuilder.Builder builder = MapBuilder.builder();
+        for (Events event : Events.values()) {
+            builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()));
+        }
+        return builder.build();
     }
 
     @ReactProp(name = PROP_SRC)

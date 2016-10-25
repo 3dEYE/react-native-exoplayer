@@ -329,5 +329,4 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         }
     };
 
-
 }
