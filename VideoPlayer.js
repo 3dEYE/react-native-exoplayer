@@ -69,5 +69,8 @@ var RNEPManager = NativeModules.RNEPManager;
 export var RNEP = {
 	isRateSupported():Promise<boolean>{
 		return RNEPManager.isRateSupported();
+	},
+	getMaxSupportedVideoPlayersCount(message:string):Promise<Object>{
+		return RNEPManager.getMaxSupportedVideoPlayersCount(message);
 	}
-}
+};
