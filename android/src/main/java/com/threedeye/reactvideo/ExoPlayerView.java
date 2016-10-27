@@ -267,7 +267,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
             if (mPlayer == null || mAudioRenderer == null || mSpeed == 1.0f) {
                 return;
             }
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (RNExoPlayerModule.isRateSupported) {
                 PlaybackParams playbackParams = new PlaybackParams();
                 playbackParams.setSpeed(mSpeed);
                 mPlayer.sendMessage(mAudioRenderer,
