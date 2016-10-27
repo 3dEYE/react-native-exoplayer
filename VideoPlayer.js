@@ -1,7 +1,8 @@
 import { PropTypes, Component } from 'react';
-import { requireNativeComponent, View } from 'react-native';
+import { requireNativeComponent, View, NativeModules} from 'react-native';
+var React = require('react');
 
-export default class Video extends Component {
+export class Video extends Component {
 
 	setNativeProps(nativeProps) {
 		this._root.setNativeProps(nativeProps);
@@ -28,6 +29,9 @@ export default class Video extends Component {
 			this.props.onEnd(event.nativeEvent);
 		}
 	};
+	_onWarning = (event : Event) =>{
+		console.warn(event.nativeEvent.warningMessage);
+	};
 
 	render() {
 		const nativeProps = Object.assign({}, this.props);
@@ -35,6 +39,7 @@ export default class Video extends Component {
 			onError:this._onError,
 			onProgress : this._onProgress,
 			onEnd : this._onEnd,
+			onWarning : this._onWarning 
 		});
 		return (
 			<RNExoPlayer
@@ -58,3 +63,11 @@ Video.propTypes = {
 };
 
 const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video);
+
+var RNEPManager = NativeModules.RNEPManager;
+
+export var RNEP = {
+	isRateSupported():Promise<boolean>{
+		return RNEPManager.isRateSupported();
+	}
+}

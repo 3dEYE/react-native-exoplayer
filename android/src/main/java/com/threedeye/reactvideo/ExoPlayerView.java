@@ -1,9 +1,9 @@
 package com.threedeye.reactvideo;
 
 import android.media.MediaDrm;
+import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.MediaController;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
@@ -24,13 +27,11 @@ import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 import com.google.android.exoplayer.util.PlayerControl;
 import com.google.android.exoplayer.util.Util;
+import com.threedeye.reactvideo.UnsupportedRateException;
 import com.threedeye.reactvideo.trackrenderer.DashRendererBuilder;
 import com.threedeye.reactvideo.trackrenderer.ExtractorRendererBuilder;
 import com.threedeye.reactvideo.trackrenderer.HlsRendererBuilder;
 import com.threedeye.reactvideo.trackrenderer.SmoothStreamingRendererBuilder;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
 
 import java.util.UUID;
 
@@ -38,9 +39,10 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         LifecycleEventListener, SurfaceHolder.Callback {
 
     public enum Events {
-                EVENT_ERROR("onError"),
-                EVENT_PROGRESS("onProgress"),
-                EVENT_END("onEnd");
+        EVENT_ERROR("onError"),
+        EVENT_PROGRESS("onProgress"),
+        EVENT_WARNING("onWarning"),
+        EVENT_END("onEnd");
 
         private final String mName;
 
@@ -56,13 +58,15 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
     public static final String EVENT_PROP_DURATION = "duration";
     public static final String EVENT_PROP_CURRENT_TIME = "currentTime";
+    public static final String EVENT_PROP_WARNING_MESSAGE = "warningMessage";
     public static final String EVENT_PROP_ERROR = "error";
     private static final int RENDERER_COUNT = 2;
 
     private MediaController mMediaController = null;
     private Uri mUri;
     private ExoPlayer mPlayer;
-    private float mRate;
+    private float mSpeed = 1.0f;
+    private boolean mIsMuted = false;
     private long mPlayerPosition;
     private MediaCodecVideoTrackRenderer mVideoRenderer;
     private MediaCodecAudioTrackRenderer mAudioRenderer;
@@ -71,7 +75,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private ThemedReactContext mContext;
     private final AspectRatioFrameLayout mAspectRatioFrameLayout;
     private SurfaceView mSurfaceView;
-    private float mVolume;
+    private float mVolume = 1.0f;
     private RCTEventEmitter mEventEmitter;
     private boolean mIsPlaying = true;
 
@@ -91,7 +95,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         this.addView(mAspectRatioFrameLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER));
-        this.setOnTouchListener(new View.OnTouchListener() {
+        mAspectRatioFrameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -103,7 +107,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     }
 
     public void setUri(Uri uri) {
-        if (uri == null){
+        if (uri == null) {
             onError("URL is incorrect");
         } else {
             mUri = uri;
@@ -114,24 +118,19 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         }
     }
 
-    public void setVolume(float volume) {
-        mVolume = volume;
-        if (mAudioRenderer == null) {
-            return;
-        }
-        mPlayer.sendMessage(mAudioRenderer,  MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, mVolume);
+    public void setSpeed(float speed) {
+        mSpeed = speed;
+        changeSpeed();
     }
 
-    public void setRate(float rate) {
-
+    public void setVolume(float volume) {
+        mVolume = volume;
+        changeVolume();
     }
 
     public void setMuted(boolean isMuted) {
-        if (isMuted) {
-            setVolume(0.0f);
-        } else {
-            setVolume(1.0f);
-        }
+        mIsMuted = isMuted;
+        changeVolume();
     }
 
     public void setPaused(boolean isPaused) {
@@ -152,8 +151,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
             case ExoPlayer.STATE_READY:
                 if (playWhenReady) {
                     event = Arguments.createMap();
-                    event.putDouble(EVENT_PROP_CURRENT_TIME, mPlayer.getCurrentPosition() / 1000.0);
-                    event.putDouble(EVENT_PROP_DURATION, mPlayer.getDuration() / 1000.0);
+                    event.putInt(EVENT_PROP_CURRENT_TIME, (int) mPlayer.getCurrentPosition() / 1000);
+                    event.putInt(EVENT_PROP_DURATION, (int) mPlayer.getDuration() / 1000);
                     mEventEmitter.receiveEvent(getId(), Events.EVENT_PROGRESS.toString(), event);
                 }
                 break;
@@ -172,7 +171,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         onError(error.getMessage());
     }
 
-    public void onError(String errorMessage){
+    public void onError(String errorMessage) {
         WritableMap event = Arguments.createMap();
         event.putString(EVENT_PROP_ERROR, errorMessage);
         mEventEmitter.receiveEvent(getId(), Events.EVENT_ERROR.toString(), event);
@@ -200,12 +199,10 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     }
 
     private void preparePlayer() {
-        if (mUri == null){
+        if (mUri == null) {
             return;
         }
-        if (mBuilder == null) {
-            mBuilder = getRendererBuilder();
-        }
+        mBuilder = getRendererBuilder();
         mBuilder.buildRender(new RendererBuilderCallback() {
             @Override
             public void onRender(MediaCodecVideoTrackRenderer videoRenderer,
@@ -248,8 +245,49 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
             return;
         }
         mPlayer.sendMessage(mVideoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
-        mPlayer.sendMessage(mAudioRenderer,  MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, mVolume);
+        changeSpeed();
+        changeVolume();
         mPlayer.setPlayWhenReady(mIsPlaying);
+    }
+
+    private void changeVolume() {
+        if (mPlayer == null || mAudioRenderer == null) {
+            return;
+        }
+        if (mIsMuted) {
+            mPlayer.sendMessage(mAudioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 0.0f);
+        } else {
+            mPlayer.sendMessage(mAudioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME,
+                    mVolume);
+        }
+    }
+
+    private void changeSpeed() {
+        try {
+            if (mPlayer == null || mAudioRenderer == null || mSpeed == 1.0f) {
+                return;
+            }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                PlaybackParams playbackParams = new PlaybackParams();
+                playbackParams.setSpeed(mSpeed);
+                mPlayer.sendMessage(mAudioRenderer,
+                        MediaCodecAudioTrackRenderer.MSG_SET_PLAYBACK_PARAMS, playbackParams);
+            } else {
+                throw new UnsupportedRateException("Change of speed is supported " +
+                        "starting from API level 23.");
+            }
+        } catch (UnsupportedRateException e) {
+            e.printStackTrace();
+            WritableMap event = Arguments.createMap();
+            String warningMessage = e.getMessage() + '\n';
+            for (StackTraceElement element : e.getStackTrace()) {
+                if (element != null) {
+                    warningMessage += '\n' + element.toString();
+                }
+            }
+            event.putString(EVENT_PROP_WARNING_MESSAGE, warningMessage);
+            mEventEmitter.receiveEvent(getId(), Events.EVENT_WARNING.toString(), event);
+        }
     }
 
     @Override
@@ -274,15 +312,13 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
             mPlayer.release();
             mPlayer.removeListener(this);
             mPlayer = null;
-            mBuilder.cancel();
-            mVideoRenderer = null;
-            mAudioRenderer = null;
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+        if (mBuilder != null) {
+            mBuilder.cancel();
+            mBuilder = null;
+        }
+        mVideoRenderer = null;
+        mAudioRenderer = null;
     }
 
     private final Runnable mLayoutRunnable = new Runnable() {

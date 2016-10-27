@@ -29,6 +29,8 @@ public class ExoPlayerReactPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(
             ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        return Arrays.<NativeModule>asList(
+                new RNExoPlayerModule(reactContext)
+        );
     }
 }

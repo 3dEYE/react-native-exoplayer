@@ -50,9 +50,9 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
         view.setUri(Uri.parse(uri));
     }
 
-    @ReactProp(name = PROP_RATE, defaultFloat = 1.0f)
-    public void setRate(ExoPlayerView  view, final float rate) {
-        view.setRate(rate);
+    @ReactProp(name = PROP_RATE)
+    public void setSpeed(ExoPlayerView  view, final float rate) {
+        view.setSpeed(rate);
     }
 
     @ReactProp(name = PROP_VOLUME, defaultFloat = 1.0f)
