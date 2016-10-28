@@ -1,6 +1,5 @@
-import { PropTypes, Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { requireNativeComponent, View, NativeModules} from 'react-native';
-var React = require('react');
 
 export class Video extends Component {
 
@@ -12,35 +11,38 @@ export class Video extends Component {
 		if (this.props.onError) {
 			this.props.onError(event.nativeEvent);
 		}
-	};
+	}
 
 	_assignRoot = (component) => {
 		this._root = component;
-	};
+	}
 
 	_onProgress = (event:Event) => {
 		if (this.props.onProgress) {
 			this.props.onProgress(event.nativeEvent);
 		}
-	};
+	}
 
 	_onEnd = (event:Event) => {
 		if (this.props.onEnd) {
 			this.props.onEnd(event.nativeEvent);
 		}
-	};
-	_onWarning = (event : Event) =>{
+	}
+
+	_onWarning = (event : Event) => {
 		console.warn(event.nativeEvent.warningMessage);
-	};
+	}
 
 	render() {
 		const nativeProps = Object.assign({}, this.props);
+
 		Object.assign(nativeProps, {
 			onError:this._onError,
 			onProgress : this._onProgress,
 			onEnd : this._onEnd,
-			onWarning : this._onWarning 
+			onWarning : this._onWarning
 		});
+
 		return (
 			<RNExoPlayer
 				ref={this._assignRoot}
@@ -64,13 +66,14 @@ Video.propTypes = {
 
 const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video);
 
-var RNEPManager = NativeModules.RNEPManager;
+const RNEPManager = NativeModules.RNEPManager;
 
 export var RNEP = {
-	isRateSupported():Promise<boolean>{
+	isRateSupported():Promise<boolean> {
 		return RNEPManager.isRateSupported();
 	},
-	getMaxSupportedVideoPlayersCount(message:string):Promise<Object>{
+
+	getMaxSupportedVideoPlayersCount(message:string):Promise<Object> {
 		return RNEPManager.getMaxSupportedVideoPlayersCount(message);
 	}
 };
