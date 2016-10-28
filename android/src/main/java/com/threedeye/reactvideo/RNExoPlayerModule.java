@@ -158,7 +158,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     }
 
     public int getHeapSize() {
-        return (int) ((int) Debug.getNativeHeapSize() / 1048576L);
+        return (int) ((int)Runtime.getRuntime().maxMemory()/1048576L);
     }
 
     class MaxSupportedTask extends AsyncTask<Void, Integer, Integer> {
