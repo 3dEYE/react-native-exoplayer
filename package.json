@@ -12,7 +12,12 @@
     "name": "Alexey Tcherevatov",
     "email": "alexey@tcherevatov.ru"
   },
-  "contributors": [],
+  "contributors": [
+    {
+      "name": "Viktoriya Mikheeva",
+      "email": "vikamicheeva21@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/3deye/react-native-3deye-video.git"
