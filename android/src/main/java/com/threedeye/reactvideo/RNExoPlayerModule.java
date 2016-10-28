@@ -53,18 +53,20 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
             mPromise = promise;
             Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
             mHeapSize = getHeapSize();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+                mMaxSupported = MAX_INSTANCES_V19;
+                sendReault();
+            }
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 MediaCodecInfo.CodecCapabilities codecCapabilities =
                         new MediaCodecInfo.CodecCapabilities();
                 mMaxSupported = codecCapabilities.getMaxSupportedInstances();
                 sendReault();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 MaxSupportedTask task = new MaxSupportedTask();
                 task.execute();
-            } else {
-                mMaxSupported = MAX_INSTANCES_V19;
-                sendReault();
-            }
+            } 
         }
     }
 
