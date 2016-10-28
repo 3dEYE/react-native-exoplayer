@@ -1,6 +1,5 @@
 package com.threedeye.reactvideo;
 
-import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
@@ -15,8 +14,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import android.os.Debug;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +28,8 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     public static boolean isRateSupported = android.os.Build.VERSION.SDK_INT
             >= Build.VERSION_CODES.M;
     private Promise mPromise;
-    private int mMaxSupported;
-    private int mHeapSize;
+    private int mMaxSupported = 0;
+    private int mHeapSize = 0;
 
     public RNExoPlayerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -53,44 +51,45 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
             mPromise = promise;
             Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
             mHeapSize = getHeapSize();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 mMaxSupported = MAX_INSTANCES_V19;
-                sendReault();
+                sendResult();
             }
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 MediaCodecInfo.CodecCapabilities codecCapabilities =
                         new MediaCodecInfo.CodecCapabilities();
                 mMaxSupported = codecCapabilities.getMaxSupportedInstances();
-                sendReault();
+                sendResult();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 MaxSupportedTask task = new MaxSupportedTask();
                 task.execute();
-            } 
+            }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private int getMaxSupportedInstancesV21() {
         int count = 0;
-        MediaCodecList codecs = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
-        for (MediaCodecInfo info : codecs.getCodecInfos()) {
-            if (info.isEncoder()) continue;
-            if (isSupportedTypeVideoAvc(info.getSupportedTypes())) {
-                String type = MediaFormat.MIMETYPE_VIDEO_AVC;
-                MediaCodecInfo.CodecCapabilities caps = info.getCapabilitiesForType(type);
-                count = getActualMax(
-                        info.isEncoder(), info.getName(), type, caps, MAX_INSTANCES);
-                break;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            MediaCodecList codecs = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
+            for (MediaCodecInfo info : codecs.getCodecInfos()) {
+                if (info.isEncoder()) continue;
+                if (isSupportedTypeVideoAvc(info.getSupportedTypes())) {
+                    String type = MediaFormat.MIMETYPE_VIDEO_AVC;
+                    MediaCodecInfo.CodecCapabilities caps = info.getCapabilitiesForType(type);
+                    count = getActualMax(
+                            info.isEncoder(), info.getName(), type, caps, MAX_INSTANCES);
+                    break;
+                }
             }
         }
         return count;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static int getActualMax(
-            boolean isEncoder, String name, String mime, MediaCodecInfo.CodecCapabilities caps,
-            int max) {
+
+    private static int getActualMax(boolean isEncoder, String name, String mime,
+                                    MediaCodecInfo.CodecCapabilities caps, int max) {
         int flag = isEncoder ? MediaCodec.CONFIGURE_FLAG_ENCODE : 0;
         MediaFormat format = createMinFormat(mime, caps);
         List<MediaCodec> codecs = new ArrayList();
@@ -101,7 +100,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
                 codec.configure(format, null, null, flag);
                 codec.start();
                 codecs.add(codec);
-            } catch (IllegalArgumentException | IOException | MediaCodec.CodecException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 break;
             }
@@ -118,31 +117,32 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
         return actualMax;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static MediaFormat createMinFormat(String mime, MediaCodecInfo.CodecCapabilities caps) {
-        MediaFormat format;
-        if (caps.getVideoCapabilities() != null) {
-            MediaCodecInfo.VideoCapabilities vcaps = caps.getVideoCapabilities();
-            int minWidth = vcaps.getSupportedWidths().getLower();
-            int minHeight = vcaps.getSupportedHeightsFor(minWidth).getLower();
-            int minBitrate = vcaps.getBitrateRange().getLower();
-            format = MediaFormat.createVideoFormat(mime, minWidth, minHeight);
-            format.setInteger(MediaFormat.KEY_COLOR_FORMAT, caps.colorFormats[0]);
-            format.setInteger(MediaFormat.KEY_BIT_RATE, minBitrate);
-            format.setInteger(MediaFormat.KEY_FRAME_RATE, 10);
-            format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 10);
-        } else {
-            MediaCodecInfo.AudioCapabilities acaps = caps.getAudioCapabilities();
-            int minSampleRate = acaps.getSupportedSampleRateRanges()[0].getLower();
-            int minChannelCount = 1;
-            int minBitrate = acaps.getBitrateRange().getLower();
-            format = MediaFormat.createAudioFormat(mime, minSampleRate, minChannelCount);
-            format.setInteger(MediaFormat.KEY_BIT_RATE, minBitrate);
+        MediaFormat format = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (caps.getVideoCapabilities() != null) {
+                MediaCodecInfo.VideoCapabilities vcaps = caps.getVideoCapabilities();
+                int minWidth = vcaps.getSupportedWidths().getLower();
+                int minHeight = vcaps.getSupportedHeightsFor(minWidth).getLower();
+                int minBitrate = vcaps.getBitrateRange().getLower();
+                format = MediaFormat.createVideoFormat(mime, minWidth, minHeight);
+                format.setInteger(MediaFormat.KEY_COLOR_FORMAT, caps.colorFormats[0]);
+                format.setInteger(MediaFormat.KEY_BIT_RATE, minBitrate);
+                format.setInteger(MediaFormat.KEY_FRAME_RATE, 10);
+                format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 10);
+            } else {
+                MediaCodecInfo.AudioCapabilities acaps = caps.getAudioCapabilities();
+                int minSampleRate = acaps.getSupportedSampleRateRanges()[0].getLower();
+                int minChannelCount = 1;
+                int minBitrate = acaps.getBitrateRange().getLower();
+                format = MediaFormat.createAudioFormat(mime, minSampleRate, minChannelCount);
+                format.setInteger(MediaFormat.KEY_BIT_RATE, minBitrate);
+            }
         }
         return format;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     private boolean isSupportedTypeVideoAvc(String[] types) {
         boolean isSupported = false;
         if (types == null || types.length == 0) {
@@ -158,7 +158,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     }
 
     public int getHeapSize() {
-        return (int) ((int)Runtime.getRuntime().maxMemory()/1048576L);
+        return (int) ((int) Runtime.getRuntime().maxMemory() / 1048576L);
     }
 
     class MaxSupportedTask extends AsyncTask<Void, Integer, Integer> {
@@ -181,11 +181,11 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
             } else {
                 mMaxSupported = result;
             }
-            sendReault();
+            sendResult();
         }
     }
 
-    private void sendReault() {
+    private void sendResult() {
         WritableMap map = Arguments.createMap();
         map.putInt(PROMISE_MAX_SUPPORTED, mMaxSupported);
         map.putInt(PROMISE_HEAP_SIZE, mHeapSize);
