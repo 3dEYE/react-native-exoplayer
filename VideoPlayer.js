@@ -37,17 +37,17 @@ export class Video extends Component {
 		const nativeProps = Object.assign({}, this.props);
 
 		Object.assign(nativeProps, {
-			onError:this._onError,
-			onProgress : this._onProgress,
-			onEnd : this._onEnd,
-			onWarning : this._onWarning
+			onError: this._onError,
+			onProgress: this._onProgress,
+			onEnd: this._onEnd,
+			onWarning: this._onWarning
 		});
 
 		return (
 			<RNExoPlayer
 				ref={this._assignRoot}
 				{...nativeProps}
-				/>
+			/>
 		);
 	}
 }
