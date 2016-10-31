@@ -6,14 +6,6 @@ Video component for React Native
 npm install --save react-native-3deye-video
 ```
 
-Add your JW License Key within <application> section of your application AndroidManifest.xml:
-
-```xml
-<meta-data
-    android:name="JW_LICENSE_KEY"
-    android:value="{YOUR_LICENCE_KEY}" />
-```
-
 ## Usage
 
 ```javascript
@@ -27,6 +19,7 @@ Later within your render function
        volume={1.0}
        muted={false}
        paused={false}
+       controls={false}
        onProgress={onProgress}
        onEnd={onEnd}
        onError={onError}
