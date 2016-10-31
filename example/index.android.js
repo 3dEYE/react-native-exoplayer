@@ -53,6 +53,7 @@ export default class VideoPlayer extends Component {
 		return (
 			<View/>
 		);
+
 	}
 }
 
