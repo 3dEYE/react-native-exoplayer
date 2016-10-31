@@ -1,5 +1,6 @@
 package com.threedeye.reactvideo;
 
+import android.media.MediaCodec;
 import android.media.MediaDrm;
 import android.media.PlaybackParams;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
+import com.google.android.exoplayer.MediaCodecTrackRenderer;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.drm.MediaDrmCallback;
 import com.google.android.exoplayer.util.PlayerControl;
@@ -36,7 +38,7 @@ import com.threedeye.reactvideo.trackrenderer.SmoothStreamingRendererBuilder;
 import java.util.UUID;
 
 public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
-        LifecycleEventListener, SurfaceHolder.Callback {
+        LifecycleEventListener, SurfaceHolder.Callback, MediaCodecVideoTrackRenderer.EventListener {
 
     public enum Events {
         EVENT_ERROR("onError"),
@@ -349,6 +351,38 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void onDrawnToSurface(Surface surface) {
+
+    }
+
+    @Override
+    public void onDroppedFrames(int count, long elapsed) {
+
+    }
+
+    @Override
+    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
+                                   float pixelWidthAspectRatio) {
+        mAspectRatioFrameLayout.setAspectRatio(
+                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+    }
+
+    @Override
+    public void onDecoderInitializationError(
+            MediaCodecTrackRenderer.DecoderInitializationException e) {
+    }
+
+    @Override
+    public void onCryptoError(MediaCodec.CryptoException e) {
+    }
+
+    @Override
+    public void onDecoderInitialized(String decoderName, long elapsedRealtimeMs,
+                                     long initializationDurationMs) {
 
     }
 
