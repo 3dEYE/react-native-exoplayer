@@ -28,8 +28,9 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     public static boolean isRateSupported = android.os.Build.VERSION.SDK_INT
             >= Build.VERSION_CODES.M;
     private Promise mPromise;
-    private int mMaxSupported = 0;
-    private int mHeapSize = 0;
+    private int mMaxSupported = 1;
+    private int mHeapSize;
+    private int mVersionSdk = android.os.Build.VERSION.SDK_INT;
 
     public RNExoPlayerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,17 +52,11 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
             mPromise = promise;
             Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
             mHeapSize = getHeapSize();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (mVersionSdk < Build.VERSION_CODES.LOLLIPOP) {
                 mMaxSupported = MAX_INSTANCES_V19;
                 sendResult();
             }
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                MediaCodecInfo.CodecCapabilities codecCapabilities =
-                        new MediaCodecInfo.CodecCapabilities();
-                mMaxSupported = codecCapabilities.getMaxSupportedInstances();
-                sendResult();
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (mVersionSdk >= Build.VERSION_CODES.LOLLIPOP) {
                 MaxSupportedTask task = new MaxSupportedTask();
                 task.execute();
             }
@@ -78,8 +73,12 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
                 if (isSupportedTypeVideoAvc(info.getSupportedTypes())) {
                     String type = MediaFormat.MIMETYPE_VIDEO_AVC;
                     MediaCodecInfo.CodecCapabilities caps = info.getCapabilitiesForType(type);
-                    count = getActualMax(
-                            info.isEncoder(), info.getName(), type, caps, MAX_INSTANCES);
+                    if (mVersionSdk >= android.os.Build.VERSION_CODES.M) {
+                        count = caps.getMaxSupportedInstances();
+                    } else {
+                        count = getActualMax(
+                                info.isEncoder(), info.getName(), type, caps, MAX_INSTANCES);
+                    }
                     break;
                 }
             }
@@ -192,3 +191,4 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
         mPromise.resolve(map);
     }
 }
+
