@@ -40,7 +40,7 @@ import java.util.UUID;
 public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         LifecycleEventListener, SurfaceHolder.Callback, MediaCodecVideoTrackRenderer.EventListener {
 
-    public enum Events  {
+    public enum Events {
         EVENT_ERROR("onError"),
         EVENT_PROGRESS("onProgress"),
         EVENT_WARNING("onWarning"),
@@ -48,12 +48,12 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
         private final String mName;
 
-        Events( final String name){
+        Events(final String name) {
             mName = name;
         }
 
         @Override
-        public String toString () {
+        public String toString() {
             return mName;
         }
     }
@@ -83,6 +83,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private Runnable mProgressUpdateRunnable = null;
     private Handler mProgressUpdateHandler = new Handler();
     private boolean mIsDetached = false;
+    private boolean mIsControlVisibile = true;
 
     public ExoPlayerView(ThemedReactContext context) {
         super(context.getCurrentActivity());
@@ -122,9 +123,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
     public void setUri(Uri uri) {
         mUri = uri;
-        mPlayerPosition = 0;
         initializePlayerIfNeeded();
-        mPlayer.seekTo(mPlayerPosition);
         preparePlayer();
     }
 
@@ -147,6 +146,20 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mIsPlaying = !isPaused;
         if (mPlayer != null) {
             mPlayer.setPlayWhenReady(mIsPlaying);
+        }
+    }
+
+    public void seekTo(int position) {
+        mPlayerPosition = position;
+        if (mPlayer != null) {
+            mPlayer.seekTo(mPlayerPosition);
+        }
+    }
+
+    public void setControls(boolean isControlVisibile) {
+        mIsControlVisibile = isControlVisibile;
+        if (mMediaController != null && mMediaController.isShowing()) {
+            mMediaController.hide();
         }
     }
 
@@ -199,7 +212,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private void toggleControlsVisibility() {
         if (mMediaController.isShowing()) {
             mMediaController.hide();
-        } else {
+        } else if (mIsControlVisibile) {
             mMediaController.show(0);
         }
     }
@@ -210,7 +223,6 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         }
         mPlayer = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 1000, 5000);
         mPlayer.addListener(this);
-        mPlayer.seekTo(mPlayerPosition);
         if (mMediaController != null) {
             mMediaController.setMediaPlayer(new PlayerControl(mPlayer));
             mMediaController.setEnabled(true);
@@ -267,6 +279,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         changeSpeed();
         changeVolume();
         mPlayer.setPlayWhenReady(mIsPlaying);
+        mPlayer.seekTo(mPlayerPosition);
     }
 
     private void changeVolume() {

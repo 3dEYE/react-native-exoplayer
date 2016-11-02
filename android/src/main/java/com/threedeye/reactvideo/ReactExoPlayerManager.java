@@ -1,27 +1,26 @@
 package com.threedeye.reactvideo;
 
-
+import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.view.ViewGroup;
 
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import android.net.Uri;
 import com.threedeye.reactvideo.ExoPlayerView.Events;
 
 import java.util.Map;
 
-public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
+public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView> {
 
-    public static final String REACT_CLASS = "RNExoPlayer";
-    public static final String PROP_SRC = "source";
-    public static final String PROP_PAUSED = "paused";
-    public static final String PROP_MUTED = "muted";
-    public static final String PROP_VOLUME = "volume";
-    public static final String PROP_RATE = "rate";
+    private static final String REACT_CLASS = "RNExoPlayer";
+    private static final String PROP_SRC = "source";
+    private static final String PROP_PAUSED = "paused";
+    private static final String PROP_MUTED = "muted";
+    private static final String PROP_VOLUME = "volume";
+    private static final String PROP_RATE = "rate";
+    private static final String PROP_SEEK_TO = "seekTo";
+    private static final String PROP_CONTROLS = "controls";
 
     @Override
     public String getName() {
@@ -30,7 +29,7 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
 
 
     @Override
-    public ExoPlayerView  createViewInstance(ThemedReactContext reactContext) {
+    public ExoPlayerView createViewInstance(ThemedReactContext reactContext) {
         ExoPlayerView playerView = new ExoPlayerView(reactContext);
         return playerView;
     }
@@ -46,27 +45,37 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView > {
     }
 
     @ReactProp(name = PROP_SRC)
-    public void setUri(ExoPlayerView  view, String uri) {
+    public void setUri(ExoPlayerView view, String uri) {
         view.setUri(Uri.parse(uri));
     }
 
     @ReactProp(name = PROP_RATE)
-    public void setSpeed(ExoPlayerView  view, final float rate) {
+    public void setSpeed(ExoPlayerView view, final float rate) {
         view.setSpeed(rate);
     }
 
     @ReactProp(name = PROP_VOLUME, defaultFloat = 1.0f)
-    public void setVolume(ExoPlayerView  view, float volume) {
+    public void setVolume(ExoPlayerView view, float volume) {
         view.setVolume(volume);
     }
 
     @ReactProp(name = PROP_MUTED, defaultBoolean = false)
-    public void setMuted(ExoPlayerView  view, boolean isMuted) {
+    public void setMuted(ExoPlayerView view, boolean isMuted) {
         view.setMuted(isMuted);
     }
 
     @ReactProp(name = PROP_PAUSED, defaultBoolean = false)
-    public void setPaused(ExoPlayerView  view, boolean isPaused) {
+    public void setPaused(ExoPlayerView view, boolean isPaused) {
         view.setPaused(isPaused);
+    }
+
+    @ReactProp(name = PROP_SEEK_TO, defaultInt = 0)
+    public void seekTo(ExoPlayerView view, int position) {
+        view.seekTo(position);
+    }
+
+    @ReactProp(name = PROP_CONTROLS, defaultBoolean = true)
+    public void setControls(ExoPlayerView view, boolean isControlVisibile) {
+        view.setControls(isControlVisibile);
     }
 }

@@ -58,7 +58,7 @@ public class DashRendererBuilder implements RendererBuilder,
     private String mUrl;
     private Handler mHandler;
     private RendererBuilderCallback mCallback;
-    private ManifestFetcher<MediaPresentationDescription> manifestFetcher;
+    private ManifestFetcher<MediaPresentationDescription> mManifestFetcher;
     private Looper mPlaybackLooper;
     private boolean mIsCanceled;
     private UriDataSource mUriDataSource;
@@ -86,9 +86,9 @@ public class DashRendererBuilder implements RendererBuilder,
         mCallback = callback;
         mIsCanceled = false;
         mUriDataSource = new DefaultUriDataSource(mContext, mUserAgent);
-        manifestFetcher = new ManifestFetcher<>(mUrl, mUriDataSource,
+        mManifestFetcher = new ManifestFetcher<>(mUrl, mUriDataSource,
                 new MediaPresentationDescriptionParser());
-        manifestFetcher.singleLoad(mHandler.getLooper(), this);
+        mManifestFetcher.singleLoad(mHandler.getLooper(), this);
     }
 
 
@@ -118,7 +118,7 @@ public class DashRendererBuilder implements RendererBuilder,
         mMpd = manifest;
         if (mMpd.dynamic && mMpd.utcTiming != null) {
             UtcTimingElementResolver.resolveTimingElement(mUriDataSource, mMpd.utcTiming,
-                    manifestFetcher.getManifestLoadCompleteTimestamp(), this);
+                    mManifestFetcher.getManifestLoadCompleteTimestamp(), this);
         } else {
             build();
         }
@@ -178,7 +178,7 @@ public class DashRendererBuilder implements RendererBuilder,
             }
         }
         DataSource videoDataSource = new DefaultUriDataSource(mContext, bandwidthMeter, mUserAgent);
-        ChunkSource videoChunkSource = new DashChunkSource(manifestFetcher,
+        ChunkSource videoChunkSource = new DashChunkSource(mManifestFetcher,
                 DefaultDashTrackSelector.newVideoInstance(mContext, true, filterHdContent),
                 videoDataSource, new FormatEvaluator.AdaptiveEvaluator(bandwidthMeter),
                 LIVE_EDGE_LATENCY_MS, mElapsedRealtimeOffset, mHandler, null, 0);
@@ -191,7 +191,7 @@ public class DashRendererBuilder implements RendererBuilder,
                 mHandler, null, 50);
 
         DataSource audioDataSource = new DefaultUriDataSource(mContext, bandwidthMeter, mUserAgent);
-        ChunkSource audioChunkSource = new DashChunkSource(manifestFetcher,
+        ChunkSource audioChunkSource = new DashChunkSource(mManifestFetcher,
                 DefaultDashTrackSelector.newAudioInstance(), audioDataSource, null,
                 LIVE_EDGE_LATENCY_MS, mElapsedRealtimeOffset, mHandler, null, 1);
         ChunkSampleSource audioSampleSource = new ChunkSampleSource(audioChunkSource, loadControl,

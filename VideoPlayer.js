@@ -55,8 +55,10 @@ export class Video extends Component {
 Video.propTypes = {
 	source: PropTypes.string,
 	rate: PropTypes.number,
+	seekTo: PropTypes.number,
 	volume: PropTypes.number,
-	paused: PropTypes.bool,
+	paused: PropTypes.bool,	
+	controls: PropTypes.bool,
 	muted: PropTypes.bool,
 	onProgress: PropTypes.func,
 	onError: PropTypes.func,
