@@ -361,22 +361,6 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mAudioRenderer = null;
     }
 
-    private final Runnable mLayoutRunnable = new Runnable() {
-        @Override
-        public void run() {
-            measure(
-                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
-            layout(getLeft(), getTop(), getRight(), getBottom());
-        }
-    };
-
-    @Override
-    public void requestLayout() {
-        super.requestLayout();
-        post(mLayoutRunnable);
-    }
-
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         maybeStartPlayback();
