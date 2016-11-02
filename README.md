@@ -37,8 +37,6 @@ cd react-native-3deye-video/example
 npm install
 ```
 
-Replace '{YOUR_LICENCE_KEY}' with your actual JWPlayer license key at `example/android/app/src/main/AndroidManifest.xml`
-
 Run example:
 ```bash
 react-native run-android
