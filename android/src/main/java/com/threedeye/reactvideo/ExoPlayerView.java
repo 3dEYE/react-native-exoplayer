@@ -44,16 +44,17 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         EVENT_ERROR("onError"),
         EVENT_PROGRESS("onProgress"),
         EVENT_WARNING("onWarning"),
-        EVENT_END("onEnd");
+        EVENT_END("onEnd"),
+        EVENT_SEEK("onSeek");
 
         private final String mName;
 
-        Events(final String name) {
+        Events( final String name){
             mName = name;
         }
 
         @Override
-        public String toString() {
+        public String toString () {
             return mName;
         }
     }
@@ -62,6 +63,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private static final String EVENT_PROP_CURRENT_TIME = "currentTime";
     private static final String EVENT_PROP_WARNING_MESSAGE = "warningMessage";
     private static final String EVENT_PROP_ERROR = "error";
+    private static final String EVENT_PROP_SEEK_TIME = "seekTime";
+
     private static final int RENDERER_COUNT = 2;
 
     private MediaController mMediaController = null;
@@ -153,6 +156,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mPlayerPosition = position;
         if (mPlayer != null) {
             mPlayer.seekTo(mPlayerPosition);
+            sendSeekEvent((int) position);
         }
     }
 
@@ -191,6 +195,12 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         event.putInt(EVENT_PROP_CURRENT_TIME, currentTime);
         event.putInt(EVENT_PROP_DURATION, duration);
         mEventEmitter.receiveEvent(getId(), Events.EVENT_PROGRESS.toString(), event);
+    }
+
+    private void sendSeekEvent(int seek) {
+        WritableMap event = Arguments.createMap();
+        event.putInt(EVENT_PROP_SEEK_TIME, seek);
+        mEventEmitter.receiveEvent(getId(), Events.EVENT_SEEK.toString(), event);
     }
 
     private void sendEndEvent() {

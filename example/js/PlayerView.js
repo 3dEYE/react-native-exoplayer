@@ -46,6 +46,10 @@ class PlayerView extends React.Component {
 		this.setState({...data});
 	}
 
+	_onSeek = (data) => {
+		console.warn('seekTime = ' + data.seekTime);
+	}
+
 	render() {
 		const { url, width, height } = this.props;
 		const { duration, currentTime, removed } = this.state;
@@ -61,7 +65,8 @@ class PlayerView extends React.Component {
 						onError={this._onError}
 						volume={0.5}
 						seekTo={50000}
-						controls={false}
+						onSeek={this._onSeek}
+						controls={true}
 						muted={this.state.muted}
 						paused={this.state.paused}
 						rate={this.state.speed}

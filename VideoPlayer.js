@@ -33,6 +33,13 @@ export class Video extends Component {
 		console.warn(event.nativeEvent.warningMessage);
 	}
 
+
+	_onSeek = (event : Event) => {
+		if (this.props.onSeek) {
+			this.props.onSeek(event.nativeEvent);
+		}
+	} 
+
 	render() {
 		const nativeProps = Object.assign({}, this.props);
 
@@ -40,7 +47,9 @@ export class Video extends Component {
 			onError: this._onError,
 			onProgress: this._onProgress,
 			onEnd: this._onEnd,
-			onWarning: this._onWarning
+			onSeek: this._onSeek,
+			onWarning: this._onWarning,
+			
 		});
 
 		return (
@@ -61,8 +70,9 @@ Video.propTypes = {
 	controls: PropTypes.bool,
 	muted: PropTypes.bool,
 	onProgress: PropTypes.func,
+	onSeek: PropTypes.func,
 	onError: PropTypes.func,
-	onEnd: PropTypes.func,
+	onEnd: PropTypes.func,	
 	...View.propTypes // include the default view properties
 };
 
