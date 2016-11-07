@@ -64,7 +64,6 @@ class PlayerView extends React.Component {
 						onEnd={this._onEnd}
 						onError={this._onError}
 						volume={0.5}
-						seekTo={50000}
 						onSeek={this._onSeek}
 						controls={true}
 						muted={this.state.muted}

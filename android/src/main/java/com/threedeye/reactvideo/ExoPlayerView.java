@@ -49,12 +49,12 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
         private final String mName;
 
-        Events( final String name){
+        Events(final String name) {
             mName = name;
         }
 
         @Override
-        public String toString () {
+        public String toString() {
             return mName;
         }
     }
@@ -156,7 +156,6 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mPlayerPosition = position;
         if (mPlayer != null) {
             mPlayer.seekTo(mPlayerPosition);
-            sendSeekEvent((int) position);
         }
     }
 
@@ -234,7 +233,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mPlayer = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 1000, 5000);
         mPlayer.addListener(this);
         if (mMediaController != null) {
-            mMediaController.setMediaPlayer(new PlayerControl(mPlayer));
+            mMediaController.setMediaPlayer(new ReactPlayerControl(mPlayer));
             mMediaController.setEnabled(true);
         }
     }
@@ -430,6 +429,24 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
             return new byte[0];
         }
     };
+
+    private class ReactPlayerControl extends PlayerControl {
+
+        private ExoPlayer mExoPlayer;
+
+        public ReactPlayerControl(ExoPlayer exoPlayer) {
+            super(exoPlayer);
+            mExoPlayer = exoPlayer;
+        }
+
+        @Override
+        public void seekTo(int timeMillis) {
+            long seekPosition = mExoPlayer.getDuration() == ExoPlayer.UNKNOWN_TIME ? 0
+                    : Math.min(Math.max(0, timeMillis), getDuration());
+            mExoPlayer.seekTo(seekPosition);
+            sendSeekEvent((int) seekPosition);
+        }
+    }
 
     @Override
     protected void onDetachedFromWindow() {

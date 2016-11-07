@@ -19,7 +19,6 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView> {
     private static final String PROP_MUTED = "muted";
     private static final String PROP_VOLUME = "volume";
     private static final String PROP_RATE = "rate";
-    private static final String PROP_SEEK_TO = "seekTo";
     private static final String PROP_CONTROLS = "controls";
 
     @Override
@@ -67,11 +66,6 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView> {
     @ReactProp(name = PROP_PAUSED, defaultBoolean = false)
     public void setPaused(ExoPlayerView view, boolean isPaused) {
         view.setPaused(isPaused);
-    }
-
-    @ReactProp(name = PROP_SEEK_TO, defaultInt = 0)
-    public void seekTo(ExoPlayerView view, int position) {
-        view.seekTo(position);
     }
 
     @ReactProp(name = PROP_CONTROLS, defaultBoolean = true)
