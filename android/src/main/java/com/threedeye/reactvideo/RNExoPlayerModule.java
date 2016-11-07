@@ -21,16 +21,19 @@ import java.util.List;
 public class RNExoPlayerModule extends ReactContextBaseJavaModule {
 
     private static final String CLASS_NAME = "RNEPManager";
-    private static final int MAX_INSTANCES_V19 = 4;
-    private static final int MAX_INSTANCES = 16;
     private static final String PROMISE_MAX_SUPPORTED = "maxSupported";
     private static final String PROMISE_HEAP_SIZE = "heapSize";
+    private static final long MB_SIZE = 1048576L;
+    private static final int MAX_INSTANCES_V19 = 4;
+    private static final int MAX_INSTANCES = 16;
+
     public static boolean isRateSupported = android.os.Build.VERSION.SDK_INT
             >= Build.VERSION_CODES.M;
     private Promise mPromise;
     private int mMaxSupported = 1;
     private int mHeapSize;
     private int mVersionSdk = android.os.Build.VERSION.SDK_INT;
+
 
     public RNExoPlayerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -157,7 +160,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     }
 
     public int getHeapSize() {
-        return (int) ((int) Runtime.getRuntime().maxMemory() / 1048576L);
+        return (int) ((int) Runtime.getRuntime().maxMemory() / MB_SIZE);
     }
 
     class MaxSupportedTask extends AsyncTask<Void, Integer, Integer> {
@@ -175,9 +178,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            if (result == null) {
-                mMaxSupported = 0;
-            } else {
+            if (result != null) {
                 mMaxSupported = result;
             }
             sendResult();
@@ -191,4 +192,3 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
         mPromise.resolve(map);
     }
 }
-
