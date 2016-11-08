@@ -20,6 +20,7 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView> {
     private static final String PROP_VOLUME = "volume";
     private static final String PROP_RATE = "rate";
     private static final String PROP_CONTROLS = "controls";
+    private static final String PROP_SEEK_TO = "seekTo";
 
     @Override
     public String getName() {
@@ -51,6 +52,11 @@ public class ReactExoPlayerManager extends SimpleViewManager<ExoPlayerView> {
     @ReactProp(name = PROP_RATE)
     public void setSpeed(ExoPlayerView view, final float rate) {
         view.setSpeed(rate);
+    }
+
+    @ReactProp(name = PROP_SEEK_TO)
+    public void setSeek(ExoPlayerView view, final int position) {
+        view.seekTo(position);
     }
 
     @ReactProp(name = PROP_VOLUME, defaultFloat = 1.0f)

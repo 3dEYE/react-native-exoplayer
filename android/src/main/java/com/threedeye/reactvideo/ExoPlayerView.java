@@ -87,6 +87,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private Handler mProgressUpdateHandler = new Handler();
     private boolean mIsDetached = false;
     private boolean mIsControlVisibile = true;
+    private ReactPlayerControl mReactPlayerControl;
+    private boolean mIsSeekned = false;
 
     public ExoPlayerView(ThemedReactContext context) {
         super(context.getCurrentActivity());
@@ -155,6 +157,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     public void seekTo(int position) {
         mPlayerPosition = position;
         if (mPlayer != null) {
+            mIsSeekned = true;
             mPlayer.seekTo(mPlayerPosition);
         }
     }
@@ -176,7 +179,12 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
                 break;
             case ExoPlayer.STATE_READY:
                 if (playWhenReady) {
+                    mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
                     mProgressUpdateHandler.post(mProgressUpdateRunnable);
+                    if (mIsSeekned) {
+                        mIsSeekned = false;
+                        sendSeekEvent();
+                    }
                 }
                 break;
             default:
@@ -196,9 +204,9 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mEventEmitter.receiveEvent(getId(), Events.EVENT_PROGRESS.toString(), event);
     }
 
-    private void sendSeekEvent(int seek) {
+    private void sendSeekEvent() {
         WritableMap event = Arguments.createMap();
-        event.putInt(EVENT_PROP_SEEK_TIME, seek);
+        event.putInt(EVENT_PROP_SEEK_TIME, (int) mPlayer.getCurrentPosition());
         mEventEmitter.receiveEvent(getId(), Events.EVENT_SEEK.toString(), event);
     }
 
@@ -233,7 +241,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mPlayer = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 1000, 5000);
         mPlayer.addListener(this);
         if (mMediaController != null) {
-            mMediaController.setMediaPlayer(new ReactPlayerControl(mPlayer));
+            mReactPlayerControl = new ReactPlayerControl(mPlayer);
+            mMediaController.setMediaPlayer(mReactPlayerControl);
             mMediaController.setEnabled(true);
         }
     }
@@ -288,7 +297,6 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         changeSpeed();
         changeVolume();
         mPlayer.setPlayWhenReady(mIsPlaying);
-        mPlayer.seekTo(mPlayerPosition);
     }
 
     private void changeVolume() {
@@ -432,19 +440,14 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
     private class ReactPlayerControl extends PlayerControl {
 
-        private ExoPlayer mExoPlayer;
-
         public ReactPlayerControl(ExoPlayer exoPlayer) {
             super(exoPlayer);
-            mExoPlayer = exoPlayer;
         }
 
         @Override
         public void seekTo(int timeMillis) {
-            long seekPosition = mExoPlayer.getDuration() == ExoPlayer.UNKNOWN_TIME ? 0
-                    : Math.min(Math.max(0, timeMillis), getDuration());
-            mExoPlayer.seekTo(seekPosition);
-            sendSeekEvent((int) seekPosition);
+            mIsSeekned = true;
+            super.seekTo(timeMillis);
         }
     }
 
