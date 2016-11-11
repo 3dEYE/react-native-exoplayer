@@ -7,6 +7,10 @@ export class Video extends Component {
 		this._root.setNativeProps(nativeProps);
 	}
 
+	seekTo = (time) => {
+    	this.setNativeProps({ seekTo: time });
+	};
+
 	_onError = (event:Event) => {
 		if (this.props.onError) {
 			this.props.onError(event.nativeEvent);
@@ -76,8 +80,11 @@ Video.propTypes = {
 	...View.propTypes // include the default view properties
 };
 
-const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video);
-
+const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video, {
+  nativeOnly: {
+    seekTo: true
+  }
+});
 const RNEPManager = NativeModules.RNEPManager;
 
 export var RNEP = {

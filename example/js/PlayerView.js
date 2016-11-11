@@ -59,13 +59,15 @@ class PlayerView extends React.Component {
 				<View style={styles.player}>
 					{removed ? null : (
 						<Video
+						ref={(ref) => {
+         					this.player = ref
+      					}}    
 						style={{width, height}}
 						source={url}
 						onEnd={this._onEnd}
 						onError={this._onError}
 						volume={0.5}
 						onSeek={this._onSeek}
-						seekTo={5000}
 						controls={true}
 						muted={this.state.muted}
 						paused={this.state.paused}

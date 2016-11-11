@@ -1,47 +1,61 @@
 package com.threedeye.reactvideo;
 
-import android.media.MediaCodec;
-import android.media.MediaDrm;
 import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.MediaController;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlaybackException;
-import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecTrackRenderer;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
-import com.google.android.exoplayer.drm.MediaDrmCallback;
-import com.google.android.exoplayer.util.PlayerControl;
-import com.google.android.exoplayer.util.Util;
-import com.threedeye.reactvideo.UnsupportedRateException;
-import com.threedeye.reactvideo.trackrenderer.DashRendererBuilder;
-import com.threedeye.reactvideo.trackrenderer.ExtractorRendererBuilder;
-import com.threedeye.reactvideo.trackrenderer.HlsRendererBuilder;
-import com.threedeye.reactvideo.trackrenderer.SmoothStreamingRendererBuilder;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.drm.DrmSessionManager;
+import com.google.android.exoplayer2.drm.ExoMediaDrm;
+import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
+import com.google.android.exoplayer2.drm.MediaDrmCallback;
+import com.google.android.exoplayer2.drm.StreamingDrmSessionManager;
+import com.google.android.exoplayer2.drm.UnsupportedDrmException;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
+import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
+import com.google.android.exoplayer2.trackselection.TrackSelections;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.UUID;
 
-public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
-        LifecycleEventListener, SurfaceHolder.Callback, MediaCodecVideoTrackRenderer.EventListener {
+public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListener,
+        TrackSelector.EventListener<MappedTrackInfo>, LifecycleEventListener {
 
     public enum Events {
-        EVENT_ERROR("onError"),
+        EVENT_ERROR("sendErrorEvent"),
         EVENT_PROGRESS("onProgress"),
         EVENT_WARNING("onWarning"),
         EVENT_END("onEnd"),
@@ -65,56 +79,37 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     private static final String EVENT_PROP_ERROR = "error";
     private static final String EVENT_PROP_SEEK_TIME = "seekTime";
 
-    private static final int RENDERER_COUNT = 2;
-
-    private MediaController mMediaController = null;
     private Uri mUri;
-    private ExoPlayer mPlayer;
+    private String mUserAgent;
+    private SimpleExoPlayer mPlayer;
     private float mSpeed = 1.0f;
     private boolean mIsMuted = false;
     private long mPlayerPosition;
-    private MediaCodecVideoTrackRenderer mVideoRenderer;
-    private MediaCodecAudioTrackRenderer mAudioRenderer;
-    private RendererBuilder mBuilder;
     private final Handler mHandler = new Handler();
     private ThemedReactContext mContext;
-    private final AspectRatioFrameLayout mAspectRatioFrameLayout;
-    private SurfaceView mSurfaceView;
+    private SimpleExoPlayerView mSimpleExoPlayerView;
     private float mVolume = 1.0f;
     private RCTEventEmitter mEventEmitter;
     private boolean mIsPlaying = true;
     private Runnable mProgressUpdateRunnable = null;
     private Handler mProgressUpdateHandler = new Handler();
     private boolean mIsDetached = false;
-    private boolean mIsControlVisibile = true;
-    private ReactPlayerControl mReactPlayerControl;
-    private boolean mIsSeekned = false;
+    private EventLogger mEventLogger;
+    private MappingTrackSelector mTrackSelector;
+    private DefaultBandwidthMeter mBandwidthMeter = new DefaultBandwidthMeter();
+    private DataSource.Factory mMediaDataSourceFactory;
 
     public ExoPlayerView(ThemedReactContext context) {
+
         super(context.getCurrentActivity());
         mContext = context;
+        mUserAgent = Util.getUserAgent(mContext, mContext.getPackageName());
         context.addLifecycleEventListener(this);
         mEventEmitter = context.getJSModule(RCTEventEmitter.class);
-        mAspectRatioFrameLayout = new AspectRatioFrameLayout(context.getCurrentActivity());
-        mSurfaceView = new SurfaceView(context.getCurrentActivity());
-        mSurfaceView.getHolder().addCallback(this);
-        mMediaController = new MediaController(mContext.getCurrentActivity());
-        mMediaController.setAnchorView(mSurfaceView);
-        initializePlayerIfNeeded();
-        mAspectRatioFrameLayout.addView(mSurfaceView,
-                new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-        this.addView(mAspectRatioFrameLayout, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        mSimpleExoPlayerView = new SimpleExoPlayerView(mContext);
+        this.addView(mSimpleExoPlayerView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER));
-        mAspectRatioFrameLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    toggleControlsVisibility();
-                }
-                return true;
-            }
-        });
+        mMediaDataSourceFactory = buildDataSourceFactory();
         mProgressUpdateRunnable = new Runnable() {
             @Override
             public void run() {
@@ -128,7 +123,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
 
     public void setUri(Uri uri) {
         mUri = uri;
-        initializePlayerIfNeeded();
+        initializePlayer();
         preparePlayer();
     }
 
@@ -157,44 +152,14 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     public void seekTo(int position) {
         mPlayerPosition = position;
         if (mPlayer != null) {
-            mIsSeekned = true;
             mPlayer.seekTo(mPlayerPosition);
         }
     }
 
     public void setControls(boolean isControlVisibile) {
-        mIsControlVisibile = isControlVisibile;
-        if (mMediaController != null && mMediaController.isShowing()) {
-            mMediaController.hide();
+        if (mSimpleExoPlayerView != null) {
+            mSimpleExoPlayerView.setUseController(isControlVisibile);
         }
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        switch (playbackState) {
-            case ExoPlayer.STATE_ENDED:
-                mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
-                sendProgressEvent((int) mPlayer.getDuration(), (int) mPlayer.getDuration());
-                sendEndEvent();
-                break;
-            case ExoPlayer.STATE_READY:
-                if (playWhenReady) {
-                    mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
-                    mProgressUpdateHandler.post(mProgressUpdateRunnable);
-                    if (mIsSeekned) {
-                        mIsSeekned = false;
-                        sendSeekEvent();
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onPlayWhenReadyCommitted() {
-
     }
 
     private void sendProgressEvent(int currentTime, int duration) {
@@ -205,9 +170,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     }
 
     private void sendSeekEvent() {
-        WritableMap event = Arguments.createMap();
-        event.putInt(EVENT_PROP_SEEK_TIME, (int) mPlayer.getCurrentPosition());
-        mEventEmitter.receiveEvent(getId(), Events.EVENT_SEEK.toString(), event);
+        //TODO
     }
 
     private void sendEndEvent() {
@@ -215,112 +178,69 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mEventEmitter.receiveEvent(getId(), Events.EVENT_END.toString(), event);
     }
 
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        onError(error.getMessage());
-    }
-
-    public void onError(String errorMessage) {
+    private void sendErrorEvent(String errorMessage) {
         WritableMap event = Arguments.createMap();
         event.putString(EVENT_PROP_ERROR, errorMessage);
         mEventEmitter.receiveEvent(getId(), Events.EVENT_ERROR.toString(), event);
     }
 
-    private void toggleControlsVisibility() {
-        if (mMediaController.isShowing()) {
-            mMediaController.hide();
-        } else if (mIsControlVisibile) {
-            mMediaController.show(0);
+    private void releasePlayer() {
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer.removeListener(this);
+            mPlayer = null;
         }
+        mTrackSelector = null;
+        mEventLogger = null;
     }
 
-    private void initializePlayerIfNeeded() {
+    private void initializePlayer() {
         if (mPlayer != null) {
             return;
         }
-        mPlayer = ExoPlayer.Factory.newInstance(RENDERER_COUNT, 1000, 5000);
+        mEventLogger = new EventLogger();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveVideoTrackSelection.Factory(mBandwidthMeter);
+        mTrackSelector = new DefaultTrackSelector(mHandler, videoTrackSelectionFactory);
+        mTrackSelector.addListener(this);
+        mTrackSelector.addListener(mEventLogger);
+        mPlayer = ExoPlayerFactory.newSimpleInstance(mContext, mTrackSelector,
+                new DefaultLoadControl(), buildDrmSessionManager());
         mPlayer.addListener(this);
-        if (mMediaController != null) {
-            mReactPlayerControl = new ReactPlayerControl(mPlayer);
-            mMediaController.setMediaPlayer(mReactPlayerControl);
-            mMediaController.setEnabled(true);
-        }
+        mPlayer.addListener(mEventLogger);
+        mSimpleExoPlayerView.setPlayer(mPlayer);
     }
 
     private void preparePlayer() {
         if (mUri == null) {
             return;
         }
-        mBuilder = getRendererBuilder();
-        mBuilder.buildRender(new RendererBuilderCallback() {
-            @Override
-            public void onRender(MediaCodecVideoTrackRenderer videoRenderer,
-                                 MediaCodecAudioTrackRenderer audioRenderer) {
-                mVideoRenderer = videoRenderer;
-                mAudioRenderer = audioRenderer;
-                mPlayer.prepare(videoRenderer, audioRenderer);
-                maybeStartPlayback();
-            }
-
-            @Override
-            public void onRenderFailure(Exception e) {
-                onError(e.getMessage());
-            }
-        });
-    }
-
-    private RendererBuilder getRendererBuilder() {
-        final int contentType = Util.inferContentType(mUri.toString());
-        String userAgent = Util.getUserAgent(mContext, mContext.getPackageName());
-        switch (contentType) {
-            case Util.TYPE_OTHER:
-                return new ExtractorRendererBuilder(mContext, mUri, userAgent);
-            case Util.TYPE_HLS:
-                return new HlsRendererBuilder(mContext, mUri, mHandler, userAgent);
-            case Util.TYPE_DASH:
-                return new DashRendererBuilder(mContext, mUri, mHandler, userAgent,
-                        mPlayer.getPlaybackLooper(), mDrmCallback);
-            case Util.TYPE_SS:
-                return new SmoothStreamingRendererBuilder(mContext, mUri, mHandler, userAgent,
-                        mPlayer.getPlaybackLooper(), mDrmCallback);
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
-    private void maybeStartPlayback() {
-        Surface surface = mSurfaceView.getHolder().getSurface();
-        if (mVideoRenderer == null || surface == null || mAudioRenderer == null) {
-            return;
-        }
-        mPlayer.sendMessage(mVideoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
         changeSpeed();
         changeVolume();
         mPlayer.setPlayWhenReady(mIsPlaying);
+        mPlayer.prepare(buildMediaSource(mUri));
     }
 
     private void changeVolume() {
-        if (mPlayer == null || mAudioRenderer == null) {
+        if (mPlayer == null) {
             return;
         }
         if (mIsMuted) {
-            mPlayer.sendMessage(mAudioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME, 0.0f);
+            mPlayer.setVolume(0.0f);
         } else {
-            mPlayer.sendMessage(mAudioRenderer, MediaCodecAudioTrackRenderer.MSG_SET_VOLUME,
-                    mVolume);
+            mPlayer.setVolume(mVolume);
         }
     }
 
     private void changeSpeed() {
         try {
-            if (mPlayer == null || mAudioRenderer == null || mSpeed == 1.0f) {
+            if (mPlayer == null || mSpeed == 1.0f) {
                 return;
             }
             if (RNExoPlayerModule.isRateSupported) {
                 PlaybackParams playbackParams = new PlaybackParams();
                 playbackParams.setSpeed(mSpeed);
-                mPlayer.sendMessage(mAudioRenderer,
-                        MediaCodecAudioTrackRenderer.MSG_SET_PLAYBACK_PARAMS, playbackParams);
+                mPlayer.setPlaybackParams(playbackParams);
             } else {
                 throw new UnsupportedRateException("Change of speed is supported " +
                         "starting from API level 23.");
@@ -339,6 +259,95 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         }
     }
 
+    private MediaSource buildMediaSource(Uri uri) {
+        int type = Util.inferContentType(uri.getLastPathSegment());
+        switch (type) {
+            case C.TYPE_SS:
+                return new SsMediaSource(uri, buildDataSourceFactory(),
+                        new DefaultSsChunkSource.Factory(mMediaDataSourceFactory), mHandler,
+                        mEventLogger);
+            case C.TYPE_DASH:
+                return new DashMediaSource(uri, buildDataSourceFactory(),
+                        new DefaultDashChunkSource.Factory(mMediaDataSourceFactory), mHandler,
+                        mEventLogger);
+            case C.TYPE_HLS:
+                return new HlsMediaSource(uri, mMediaDataSourceFactory, mHandler, mEventLogger);
+            case C.TYPE_OTHER:
+                return new ExtractorMediaSource(uri, mMediaDataSourceFactory,
+                        new DefaultExtractorsFactory(), mHandler, mEventLogger);
+            default: {
+                throw new IllegalStateException("Unsupported type: " + type);
+            }
+        }
+    }
+
+    private DataSource.Factory buildDataSourceFactory() {
+        return new DefaultDataSourceFactory(mContext, mBandwidthMeter,
+                buildHttpDataSourceFactory());
+    }
+
+    private HttpDataSource.Factory buildHttpDataSourceFactory() {
+        return new DefaultHttpDataSourceFactory(mUserAgent, mBandwidthMeter);
+    }
+
+    private DrmSessionManager<FrameworkMediaCrypto> buildDrmSessionManager() {
+        if (Util.SDK_INT < 18) {
+            return null;
+        }
+        StreamingDrmSessionManager drmSessionManager = null;
+        try {
+            drmSessionManager = StreamingDrmSessionManager.newWidevineInstance(mDrmCallback, null,
+                    mHandler, mEventLogger);
+        } catch (UnsupportedDrmException e) {
+            e.printStackTrace();
+        }
+        return drmSessionManager;
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        switch (playbackState) {
+            case ExoPlayer.STATE_ENDED:
+                mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
+                sendProgressEvent((int) mPlayer.getDuration(), (int) mPlayer.getDuration());
+                sendEndEvent();
+                break;
+            case ExoPlayer.STATE_READY:
+                if (playWhenReady) {
+                    mProgressUpdateHandler.post(mProgressUpdateRunnable);
+                } else {
+                    mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTrackSelectionsChanged(TrackSelections<? extends MappedTrackInfo> trackSelections) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        sendErrorEvent(error.getMessage());
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
     @Override
     public void onHostPause() {
         if (mPlayer != null) {
@@ -353,102 +362,14 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
     @Override
     public void onHostResume() {
         if (!mIsDetached) {
-            initializePlayerIfNeeded();
+            initializePlayer();
             preparePlayer();
-            mProgressUpdateHandler.post(mProgressUpdateRunnable);
         }
     }
 
     @Override
     public void onHostDestroy() {
         releasePlayer();
-    }
-
-    private void releasePlayer() {
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer.removeListener(this);
-            mPlayer = null;
-        }
-        if (mBuilder != null) {
-            mBuilder.cancel();
-            mBuilder = null;
-        }
-        mVideoRenderer = null;
-        mAudioRenderer = null;
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        maybeStartPlayback();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void onDrawnToSurface(Surface surface) {
-
-    }
-
-    @Override
-    public void onDroppedFrames(int count, long elapsed) {
-
-    }
-
-    @Override
-    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-                                   float pixelWidthAspectRatio) {
-        mAspectRatioFrameLayout.setAspectRatio(
-                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
-    }
-
-    @Override
-    public void onDecoderInitializationError(
-            MediaCodecTrackRenderer.DecoderInitializationException e) {
-    }
-
-    @Override
-    public void onCryptoError(MediaCodec.CryptoException e) {
-    }
-
-    @Override
-    public void onDecoderInitialized(String decoderName, long elapsedRealtimeMs,
-                                     long initializationDurationMs) {
-
-    }
-
-    private final MediaDrmCallback mDrmCallback = new MediaDrmCallback() {
-        @Override
-        public byte[] executeProvisionRequest(UUID uuid, MediaDrm.ProvisionRequest request)
-                throws Exception {
-            return new byte[0];
-        }
-
-        @Override
-        public byte[] executeKeyRequest(UUID uuid, MediaDrm.KeyRequest request) throws Exception {
-            return new byte[0];
-        }
-    };
-
-    private class ReactPlayerControl extends PlayerControl {
-
-        public ReactPlayerControl(ExoPlayer exoPlayer) {
-            super(exoPlayer);
-        }
-
-        @Override
-        public void seekTo(int timeMillis) {
-            mIsSeekned = true;
-            super.seekTo(timeMillis);
-        }
     }
 
     @Override
@@ -463,4 +384,18 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.Listener,
         mIsDetached = false;
         super.onAttachedToWindow();
     }
+
+    private final MediaDrmCallback mDrmCallback = new MediaDrmCallback() {
+        @Override
+        public byte[] executeProvisionRequest(UUID uuid, ExoMediaDrm.ProvisionRequest request)
+                throws Exception {
+            return new byte[0];
+        }
+
+        @Override
+        public byte[] executeKeyRequest(UUID uuid, ExoMediaDrm.KeyRequest request)
+                throws Exception {
+            return new byte[0];
+        }
+    };
 }
