@@ -26,21 +26,22 @@ import com.google.android.exoplayer2.drm.MediaDrmCallback;
 import com.google.android.exoplayer2.drm.StreamingDrmSessionManager;
 import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.smoothstreaming.DefaultSsChunkSource;
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelections;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -55,7 +56,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         TrackSelector.EventListener<MappedTrackInfo>, LifecycleEventListener {
 
     public enum Events {
-        EVENT_ERROR("sendErrorEvent"),
+        EVENT_ERROR("onError"),
         EVENT_PROGRESS("onProgress"),
         EVENT_WARNING("onWarning"),
         EVENT_END("onEnd"),
@@ -79,42 +80,42 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     private static final String EVENT_PROP_ERROR = "error";
     private static final String EVENT_PROP_SEEK_TIME = "seekTime";
 
-    private Uri mUri;
-    private String mUserAgent;
-    private SimpleExoPlayer mPlayer;
-    private float mSpeed = 1.0f;
-    private boolean mIsMuted = false;
-    private long mPlayerPosition;
-    private final Handler mHandler = new Handler();
     private ThemedReactContext mContext;
-    private SimpleExoPlayerView mSimpleExoPlayerView;
-    private float mVolume = 1.0f;
     private RCTEventEmitter mEventEmitter;
-    private boolean mIsPlaying = true;
+    private SimpleExoPlayerView mSimpleExoPlayerView;
+    private SimpleExoPlayer mPlayer;
+    private final Handler mHandler = new Handler();
     private Runnable mProgressUpdateRunnable = null;
     private Handler mProgressUpdateHandler = new Handler();
-    private boolean mIsDetached = false;
     private EventLogger mEventLogger;
     private MappingTrackSelector mTrackSelector;
     private DefaultBandwidthMeter mBandwidthMeter = new DefaultBandwidthMeter();
     private DataSource.Factory mMediaDataSourceFactory;
+    private String mUserAgent;
+    private Uri mUri;
+    private long mPlayerPosition;
+    private float mSpeed = 1.0f;
+    private float mVolume = 1.0f;
+    private boolean mIsMuted = false;
+    private boolean mIsPlaying = true;
+    private boolean mIsDetached = false;
 
     public ExoPlayerView(ThemedReactContext context) {
-
         super(context.getCurrentActivity());
         mContext = context;
-        mUserAgent = Util.getUserAgent(mContext, mContext.getPackageName());
         context.addLifecycleEventListener(this);
         mEventEmitter = context.getJSModule(RCTEventEmitter.class);
         mSimpleExoPlayerView = new SimpleExoPlayerView(mContext);
         this.addView(mSimpleExoPlayerView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER));
+        mUserAgent = Util.getUserAgent(mContext, mContext.getPackageName());
         mMediaDataSourceFactory = buildDataSourceFactory();
         mProgressUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                if (mPlayer != null) {
-                    sendProgressEvent((int) mPlayer.getCurrentPosition(), (int) mPlayer.getDuration());
+                if (mPlayer != null && mPlayer.getPlayWhenReady()) {
+                    sendProgressEvent((int) mPlayer.getCurrentPosition(),
+                            (int) mPlayer.getDuration());
                 }
                 mProgressUpdateHandler.postDelayed(mProgressUpdateRunnable, 250);
             }
@@ -125,6 +126,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         mUri = uri;
         initializePlayer();
         preparePlayer();
+        mProgressUpdateHandler.post(mProgressUpdateRunnable);
     }
 
     public void setSpeed(float speed) {
@@ -192,6 +194,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         }
         mTrackSelector = null;
         mEventLogger = null;
+        mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
     }
 
     private void initializePlayer() {
@@ -217,6 +220,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         }
         changeSpeed();
         changeVolume();
+        mPlayer.seekTo(mPlayerPosition);
         mPlayer.setPlayWhenReady(mIsPlaying);
         mPlayer.prepare(buildMediaSource(mUri));
     }
@@ -247,6 +251,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
             }
         } catch (UnsupportedRateException e) {
             e.printStackTrace();
+            mSpeed = 1.0f;
             WritableMap event = Arguments.createMap();
             String warningMessage = e.getMessage() + '\n';
             for (StackTraceElement element : e.getStackTrace()) {
@@ -317,17 +322,11 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
                 sendProgressEvent((int) mPlayer.getDuration(), (int) mPlayer.getDuration());
                 sendEndEvent();
                 break;
-            case ExoPlayer.STATE_READY:
-                if (playWhenReady) {
-                    mProgressUpdateHandler.post(mProgressUpdateRunnable);
-                } else {
-                    mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
-                }
-                break;
             default:
                 break;
         }
     }
+
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest) {
 
@@ -339,8 +338,36 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     }
 
     @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        sendErrorEvent(error.getMessage());
+    public void onPlayerError(ExoPlaybackException e) {
+        String errorString = e.getMessage();
+        if (errorString == null) {
+            if (e.type == ExoPlaybackException.TYPE_RENDERER) {
+                Exception cause = e.getRendererException();
+                if (cause instanceof MediaCodecRenderer.DecoderInitializationException) {
+                    MediaCodecRenderer.DecoderInitializationException decoderInitializationException =
+                            (MediaCodecRenderer.DecoderInitializationException) cause;
+                    if (decoderInitializationException.decoderName == null) {
+                        if (decoderInitializationException.getCause() instanceof
+                                MediaCodecUtil.DecoderQueryException) {
+                            errorString = mContext.getString(R.string.error_querying_decoders);
+                        } else if (decoderInitializationException.secureDecoderRequired) {
+                            errorString = mContext.getString(R.string.error_no_secure_decoder,
+                                    decoderInitializationException.mimeType);
+                        } else {
+                            errorString = mContext.getString(R.string.error_no_decoder,
+                                    decoderInitializationException.mimeType);
+                        }
+                    } else {
+                        errorString = mContext.getString(R.string.error_instantiating_decoder,
+                                decoderInitializationException.decoderName);
+                    }
+                }
+            } else if (e.type == ExoPlaybackException.TYPE_SOURCE) {
+                errorString = mContext.getString(R.string.error_unable_to_connect,
+                        mUri);
+            }
+        }
+        sendErrorEvent(errorString);
     }
 
     @Override
@@ -352,11 +379,11 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     public void onHostPause() {
         if (mPlayer != null) {
             mPlayerPosition = mPlayer.getCurrentPosition();
+            mIsPlaying = mPlayer.getPlayWhenReady();
         } else {
             mPlayerPosition = 0;
         }
         releasePlayer();
-        mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
     }
 
     @Override
@@ -364,6 +391,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         if (!mIsDetached) {
             initializePlayer();
             preparePlayer();
+            mProgressUpdateHandler.post(mProgressUpdateRunnable);
         }
     }
 
@@ -381,8 +409,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
 
     @Override
     protected void onAttachedToWindow() {
-        mIsDetached = false;
         super.onAttachedToWindow();
+        mIsDetached = false;
     }
 
     private final MediaDrmCallback mDrmCallback = new MediaDrmCallback() {

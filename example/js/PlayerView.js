@@ -17,10 +17,10 @@ class PlayerView extends React.Component {
 
 		this.state = {
 			url: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8',
-			volume: 0.1,
+			volume: 1.0,
 			muted: false,
 			paused: false,
-			speed: 1.0
+			speed: 4.0
 		};
 	}
 
@@ -44,6 +44,9 @@ class PlayerView extends React.Component {
 
 	_onProgress = (data) => {
 		this.setState({...data});
+		if (this.state.volume > 0.0){
+			this.setState({volume:this.state.volume-0.05});
+		}
 	}
 
 	_onSeek = (data) => {
@@ -66,7 +69,7 @@ class PlayerView extends React.Component {
 						source={url}
 						onEnd={this._onEnd}
 						onError={this._onError}
-						volume={0.5}
+						volume={this.state.volume}
 						onSeek={this._onSeek}
 						controls={true}
 						muted={this.state.muted}
