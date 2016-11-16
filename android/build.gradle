@@ -15,13 +15,7 @@ android {
     }
 }
 
-repositories {
-    maven {
-        url 'https://mvn.jwplayer.com/content/repositories/releases/'
-    }
-}
-
 dependencies {
     compile 'com.facebook.react:react-native:0.35.+'
-    compile 'com.longtailvideo.jwplayer:jwplayer-android-sdk:+'
+    compile 'com.google.android.exoplayer:exoplayer:r2.0.4'
 }

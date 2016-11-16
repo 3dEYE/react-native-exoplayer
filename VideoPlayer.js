@@ -1,14 +1,98 @@
-import { PropTypes } from 'react';
-import { requireNativeComponent, View } from 'react-native';
+import React, { PropTypes, Component } from 'react';
+import { requireNativeComponent, View, NativeModules} from 'react-native';
 
-var iface = {
-  name: 'JWPlayer',
-  propTypes: {
-    file: PropTypes.string,
-    // borderRadius: PropTypes.number,
-    // resizeMode: PropTypes.oneOf(['cover', 'contain', 'stretch']),
-    ...View.propTypes // include the default view properties
-  },
+export class Video extends Component {
+
+	setNativeProps(nativeProps) {
+		this._root.setNativeProps(nativeProps);
+	}
+
+	seekTo = (time) => {
+    	this.setNativeProps({ seekTo: time });
+	};
+
+	_onError = (event:Event) => {
+		if (this.props.onError) {
+			this.props.onError(event.nativeEvent);
+		}
+	}
+
+	_assignRoot = (component) => {
+		this._root = component;
+	}
+
+	_onProgress = (event:Event) => {
+		if (this.props.onProgress) {
+			this.props.onProgress(event.nativeEvent);
+		}
+	}
+
+	_onEnd = (event:Event) => {
+		if (this.props.onEnd) {
+			this.props.onEnd(event.nativeEvent);
+		}
+	}
+
+	_onWarning = (event : Event) => {
+		console.warn(event.nativeEvent.warningMessage);
+	}
+
+
+	_onSeek = (event : Event) => {
+		if (this.props.onSeek) {
+			this.props.onSeek(event.nativeEvent);
+		}
+	} 
+
+	render() {
+		const nativeProps = Object.assign({}, this.props);
+
+		Object.assign(nativeProps, {
+			onError: this._onError,
+			onProgress: this._onProgress,
+			onEnd: this._onEnd,
+			onSeek: this._onSeek,
+			onWarning: this._onWarning,
+			
+		});
+
+		return (
+			<RNExoPlayer
+				ref={this._assignRoot}
+				{...nativeProps}
+			/>
+		);
+	}
+}
+
+Video.propTypes = {
+	source: PropTypes.string,
+	rate: PropTypes.number,
+	seekTo: PropTypes.number,
+	volume: PropTypes.number,
+	paused: PropTypes.bool,	
+	controls: PropTypes.bool,
+	muted: PropTypes.bool,
+	onProgress: PropTypes.func,
+	onSeek: PropTypes.func,
+	onError: PropTypes.func,
+	onEnd: PropTypes.func,	
+	...View.propTypes // include the default view properties
 };
 
-module.exports = requireNativeComponent('RCTJWPlayer', iface);
+const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video, {
+  nativeOnly: {
+    seekTo: true
+  }
+});
+const RNEPManager = NativeModules.RNEPManager;
+
+export var RNEP = {
+	isRateSupported():Promise<boolean> {
+		return RNEPManager.isRateSupported();
+	},
+
+	getMaxSupportedVideoPlayersCount(message:string):Promise<Object> {
+		return RNEPManager.getMaxSupportedVideoPlayersCount(message);
+	}
+};

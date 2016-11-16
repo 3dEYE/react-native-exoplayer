@@ -1,0 +1,12 @@
+[
+  {
+    "url": "http://ios-streaming.cnet.com/mpx/hls/2016/08/19/747447363521/Baby_Monitor_Capsule_892578_800/Baby_Monitor_Capsule_892578_800.m3u8",
+    "width": 320,
+    "height": 180
+  },
+  {
+    "url": "http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8",
+    "width": 320,
+    "height": 240
+  }
+]
