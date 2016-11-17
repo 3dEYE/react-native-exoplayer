@@ -44,13 +44,6 @@ class PlayerView extends React.Component {
 
 	_onProgress = (data) => {
 		this.setState({...data});
-		if (this.state.volume > 0.0){
-			this.setState({volume:this.state.volume-0.05});
-		}
-	}
-
-	_onSeek = (data) => {
-		console.warn('seekTime = ' + data.seekTime);
 	}
 
 	render() {
@@ -70,7 +63,6 @@ class PlayerView extends React.Component {
 						onEnd={this._onEnd}
 						onError={this._onError}
 						volume={this.state.volume}
-						onSeek={this._onSeek}
 						controls={true}
 						muted={this.state.muted}
 						paused={this.state.paused}
