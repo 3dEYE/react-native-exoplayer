@@ -113,7 +113,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         mProgressUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                if (mPlayer != null && mPlayer.getPlayWhenReady()) {
+                if (mPlayer != null && mPlayer.getPlaybackState() == ExoPlayer.STATE_READY 
+                        &&  mPlayer.getPlayWhenReady()) {
                     sendProgressEvent((int) mPlayer.getCurrentPosition(),
                             (int) mPlayer.getDuration());
                 }
