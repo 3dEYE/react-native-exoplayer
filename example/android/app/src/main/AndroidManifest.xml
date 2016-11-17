@@ -16,9 +16,6 @@
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:theme="@style/AppTheme">
-      <meta-data
-          android:name="JW_LICENSE_KEY"
-          android:value="httdTJAR8bASXVBz67FM8oRmgtmEf307xYqsMg==" />
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"

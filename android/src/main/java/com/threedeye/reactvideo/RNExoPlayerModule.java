@@ -45,7 +45,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public static void isRateSupported(Promise promise) {
+    public void isRateSupported(Promise promise) {
         promise.resolve(isRateSupported);
     }
 
@@ -90,7 +90,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
     }
 
 
-    private static int getActualMax(boolean isEncoder, String name, String mime,
+    private int getActualMax(boolean isEncoder, String name, String mime,
                                     MediaCodecInfo.CodecCapabilities caps, int max) {
         int flag = isEncoder ? MediaCodec.CONFIGURE_FLAG_ENCODE : 0;
         MediaFormat format = createMinFormat(mime, caps);
@@ -119,7 +119,7 @@ public class RNExoPlayerModule extends ReactContextBaseJavaModule {
         return actualMax;
     }
 
-    private static MediaFormat createMinFormat(String mime, MediaCodecInfo.CodecCapabilities caps) {
+    private MediaFormat createMinFormat(String mime, MediaCodecInfo.CodecCapabilities caps) {
         MediaFormat format = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (caps.getVideoCapabilities() != null) {
