@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	Text,
 	View,
+	Slider,
 	TouchableHighlight
 } from 'react-native';
 
@@ -16,7 +17,6 @@ class PlayerView extends React.Component {
 		super(props);
 
 		this.state = {
-			url: 'http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8',
 			volume: 1.0,
 			muted: false,
 			paused: false,
@@ -46,6 +46,15 @@ class PlayerView extends React.Component {
 		this.setState({...data});
 	}
 
+	_onSeek = (data) => {
+		console.warn('seekTime = ' + data.seekTime);
+	}
+
+	_onSliderValueChange = value => {
+		const position = Math.floor(value * this.state.duration);
+		this.refs.player.seekTo(position);
+	}
+
 	render() {
 		const { url, width, height } = this.props;
 		const { duration, currentTime, removed } = this.state;
@@ -55,19 +64,18 @@ class PlayerView extends React.Component {
 				<View style={styles.player}>
 					{removed ? null : (
 						<Video
-						ref={(ref) => {
-         					this.player = ref
-      					}}    
-						style={{width, height}}
-						source={url}
-						onEnd={this._onEnd}
-						onError={this._onError}
-						volume={this.state.volume}
-						controls={true}
-						muted={this.state.muted}
-						paused={this.state.paused}
-						rate={this.state.speed}
-						onProgress={this._onProgress}
+							ref="player"
+							style={{width, height}}
+							source={url}
+							onEnd={this._onEnd}
+							onError={this._onError}
+							volume={this.state.volume}
+							onSeek={this._onSeek}
+							controls={true}
+							muted={this.state.muted}
+							paused={this.state.paused}
+							rate={this.state.speed}
+							onProgress={this._onProgress}
 						/>
 					)}
 				</View>
@@ -85,6 +93,12 @@ class PlayerView extends React.Component {
 							<Text style={styles.buttonLabel}>{this.state.removed ? 'Get back' : 'Remove'}</Text>
 						</View>
 					</TouchableHighlight>
+				</View>
+
+				<View>
+					<Slider
+						value={this.state.currentTime / this.state.duration}
+						onValueChange={this._onSliderValueChange}/>
 				</View>
 			</View>
 		);
