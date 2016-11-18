@@ -64,12 +64,12 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
 
         private final String mName;
 
-        Events( final String name){
+        Events(final String name) {
             mName = name;
         }
 
         @Override
-        public String toString () {
+        public String toString() {
             return mName;
         }
     }
@@ -99,6 +99,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     private boolean mIsMuted = false;
     private boolean mIsPlaying = true;
     private boolean mIsDetached = false;
+    private boolean mIsSeeked = false;
 
     public ExoPlayerView(ThemedReactContext context) {
         super(context.getCurrentActivity());
@@ -113,8 +114,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         mProgressUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                if (mPlayer != null && mPlayer.getPlaybackState() == ExoPlayer.STATE_READY 
-                        &&  mPlayer.getPlayWhenReady()) {
+                if (mPlayer != null && mPlayer.getPlaybackState() == ExoPlayer.STATE_READY &&
+                        mPlayer.getPlayWhenReady()) {
                     sendProgressEvent((int) mPlayer.getCurrentPosition(),
                             (int) mPlayer.getDuration());
                 }
@@ -127,6 +128,8 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         mUri = uri;
         initializePlayer();
         preparePlayer();
+        mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
+        mProgressUpdateHandler.post(mProgressUpdateRunnable);
     }
 
     public void setSpeed(float speed) {
@@ -155,12 +158,13 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         mPlayerPosition = position;
         if (mPlayer != null) {
             mPlayer.seekTo(mPlayerPosition);
+            mIsSeeked = true;
         }
     }
 
-    public void setControls(boolean isControlVisibile) {
+    public void setControls(boolean isControlVisible) {
         if (mSimpleExoPlayerView != null) {
-            mSimpleExoPlayerView.setUseController(isControlVisibile);
+            mSimpleExoPlayerView.setUseController(isControlVisible);
         }
     }
 
@@ -172,7 +176,9 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     }
 
     private void sendSeekEvent() {
-        //TODO
+        WritableMap event = Arguments.createMap();
+        event.putInt(EVENT_PROP_SEEK_TIME, (int) mPlayer.getCurrentPosition());
+        mEventEmitter.receiveEvent(getId(), Events.EVENT_SEEK.toString(), event);
     }
 
     private void sendEndEvent() {
@@ -318,15 +324,13 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         switch (playbackState) {
             case ExoPlayer.STATE_ENDED:
-                mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
                 sendProgressEvent((int) mPlayer.getDuration(), (int) mPlayer.getDuration());
                 sendEndEvent();
                 break;
             case ExoPlayer.STATE_READY:
-                if (playWhenReady) {
-                    mProgressUpdateHandler.post(mProgressUpdateRunnable);
-                } else {
-                    mProgressUpdateHandler.removeCallbacks(mProgressUpdateRunnable);
+                if (mIsSeeked) {
+                    mIsSeeked = false;
+                    sendSeekEvent();
                 }
                 break;
             default:
@@ -398,6 +402,7 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         if (!mIsDetached) {
             initializePlayer();
             preparePlayer();
+            mProgressUpdateHandler.post(mProgressUpdateRunnable);
         }
     }
 
