@@ -16,6 +16,6 @@ android {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:0.35.+'
+    compile 'com.facebook.react:react-native:+'
     compile 'com.google.android.exoplayer:exoplayer:r2.0.4'
 }
