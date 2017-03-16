@@ -1,15 +1,15 @@
-# react-native-3deye-video
+# react-native-exoplayer
 Video component for React Native
 
 ## Installation
 ```bash
-npm install --save react-native-3deye-video
+npm install --save react-native-exoplayer
 ```
 
 ## Usage
 
 ```javascript
-import Video from 'react-native-3deye-video';
+import Video from 'react-native-exoplayer';
 ```
 Later within your render function
 
@@ -32,8 +32,8 @@ Try included example:
 
 Clone repository and install dependencies:
 ```bash
-git clone https://github.com/3dEYE/react-native-3deye-video.git
-cd react-native-3deye-video/example
+git clone https://github.com/3dEYE/react-native-exoplayer.git
+cd react-native-exoplayer/example
 npm install
 ```
 
