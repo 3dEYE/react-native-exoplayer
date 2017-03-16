@@ -1,5 +1,5 @@
 {
-  "name": "react-native-3deye-video",
+  "name": "react-native-exoplayer",
   "version": "0.0.1",
   "description": "A video player component for react native",
   "license": "LGPL-3.0",
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/3deye/react-native-3deye-video.git"
+    "url": "https://github.com/3deye/react-native-exoplayer.git"
   },
   "keywords": [
     "react",
