@@ -3,7 +3,8 @@ Video component for React Native
 
 ## Installation
 ```bash
-npm install --save react-native-exoplayer
+npm install --save 3dEYE/react-native-exoplayer
+react-native link
 ```
 
 ## Usage
