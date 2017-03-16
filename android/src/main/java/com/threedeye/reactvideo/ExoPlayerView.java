@@ -56,11 +56,11 @@ public class ExoPlayerView extends FrameLayout implements ExoPlayer.EventListene
         TrackSelector.EventListener<MappedTrackInfo>, LifecycleEventListener {
 
     public enum Events {
-        EVENT_ERROR("onError"),
-        EVENT_PROGRESS("onProgress"),
-        EVENT_WARNING("onWarning"),
-        EVENT_END("onEnd"),
-        EVENT_SEEK("onSeek");
+        EVENT_ERROR("onExoPlayerError"),
+        EVENT_PROGRESS("onExoPlayerProgress"),
+        EVENT_WARNING("onExoPlayerWarning"),
+        EVENT_END("onExoPlayerEnd"),
+        EVENT_SEEK("onExoPlayerSeek");
 
         private final String mName;
 

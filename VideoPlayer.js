@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { requireNativeComponent, View, NativeModules} from 'react-native';
+import { requireNativeComponent, View, NativeModules } from 'react-native';
 
 export class Video extends Component {
 
@@ -33,27 +33,26 @@ export class Video extends Component {
 		}
 	}
 
-	_onWarning = (event : Event) => {
+	_onWarning = (event:Event) => {
 		console.warn(event.nativeEvent.warningMessage);
 	}
 
 
-	_onSeek = (event : Event) => {
+	_onSeek = (event:Event) => {
 		if (this.props.onSeek) {
 			this.props.onSeek(event.nativeEvent);
 		}
-	} 
+	}
 
 	render() {
 		const nativeProps = Object.assign({}, this.props);
 
 		Object.assign(nativeProps, {
-			onError: this._onError,
-			onProgress: this._onProgress,
-			onEnd: this._onEnd,
-			onSeek: this._onSeek,
-			onWarning: this._onWarning,
-			
+			onExoPlayerError: this._onError,
+			onExoPlayerProgress: this._onProgress,
+			onExoPlayerEnd: this._onEnd,
+			onExoPlayerSeek: this._onSeek,
+			onExoPlayerWarning: this._onWarning
 		});
 
 		return (
@@ -70,20 +69,20 @@ Video.propTypes = {
 	rate: PropTypes.number,
 	seekTo: PropTypes.number,
 	volume: PropTypes.number,
-	paused: PropTypes.bool,	
+	paused: PropTypes.bool,
 	controls: PropTypes.bool,
 	muted: PropTypes.bool,
 	onProgress: PropTypes.func,
 	onSeek: PropTypes.func,
 	onError: PropTypes.func,
-	onEnd: PropTypes.func,	
+	onEnd: PropTypes.func,
 	...View.propTypes // include the default view properties
 };
 
 const RNExoPlayer = requireNativeComponent(`RNExoPlayer`, Video, {
-  nativeOnly: {
-    seekTo: true
-  }
+	nativeOnly: {
+		seekTo: true
+	}
 });
 const RNEPManager = NativeModules.RNEPManager;
 
