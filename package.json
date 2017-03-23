@@ -2,7 +2,7 @@
   "name": "react-native-exoplayer",
   "version": "0.0.2",
   "description": "A video player component for react native",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "main": "VideoPlayer.js",
   "files": [
       "VideoPlayer.js",
