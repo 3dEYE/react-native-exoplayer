@@ -9,7 +9,7 @@ import {
 	TouchableHighlight
 } from 'react-native';
 
-import { Video } from 'react-native-3deye-video';
+import { Video } from 'react-native-exoplayer';
 
 class PlayerView extends React.Component {
 
@@ -20,7 +20,7 @@ class PlayerView extends React.Component {
 			volume: 1.0,
 			muted: false,
 			paused: false,
-			speed: 4.0
+			speed: 1.0
 		};
 	}
 

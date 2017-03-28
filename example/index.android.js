@@ -11,7 +11,7 @@ import {
 	Text,
 	View
 } from 'react-native';
-import { RNEP } from 'react-native-3deye-video';
+import { RNEP } from 'react-native-exoplayer';
 import PlayerView from './js/PlayerView';
 
 import data from './data.json';
